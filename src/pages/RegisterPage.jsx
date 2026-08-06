@@ -1,72 +1,68 @@
 import { Link } from "react-router-dom";
+import formBackground from "../assets/form-background.png";
 
 const RegisterPage = () => {
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col items-center justify-center p-6 select-none">
-      <h2
-        className="text-lg sm:text-xl font-normal tracking-wider uppercase text-white mb-8 text-center"
-        style={{ fontFamily: "'Outfit', sans-serif" }}
-      >
-        Enter your info to register
-      </h2>
+    <div className="min-h-screen bg-[#0e0d10] text-white flex flex-col items-center md:items-end justify-center p-6 md:px-12 lg:px-16 select-none relative overflow-hidden">
+      <img
+        src={formBackground}
+        alt="Form Background"
+        className="absolute inset-y-0 left-0 h-full w-auto max-w-none object-cover object-left opacity-100 pointer-events-none"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0e0d10]/20 to-[#0e0d10] pointer-events-none" />
 
-      <form
-        action=""
-        className="w-full max-w-md bg-zinc-900/40 backdrop-blur-xl border border-white/20 hover:border-white/60 rounded-2xl p-8 sm:p-10 shadow-2xl flex flex-col gap-5 transition-all duration-500"
-      >
-        <label className="text-xs uppercase tracking-widest text-white/70 font-medium -mb-2">
-          Username
-        </label>
-        <input
-          type="text"
-          placeholder="Enter your name"
-          className="w-full bg-white/5 border border-white/20 hover:border-white/60 focus:border-white/60 text-white placeholder-white/30 rounded-xl px-5 py-3.5 text-sm outline-none transition-all duration-300"
-        />
+      <div className="relative z-10 w-full md:w-[46%] max-w-lg flex flex-col items-center md:items-start">
+        <h1 className="text-3xl sm:text-4xl font-medium tracking-wider uppercase text-white/90 text-center md:text-left mb-12 sm:mb-16">
+          JOIN US TODAY
+        </h1>
 
-        <label className="text-xs uppercase tracking-widest text-white/70 font-medium -mb-2">
-          Email
-        </label>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          className="w-full bg-white/5 border border-white/20 hover:border-white/60 focus:border-white/60 text-white placeholder-white/30 rounded-xl px-5 py-3.5 text-sm outline-none transition-all duration-300"
-        />
-
-        <label className="text-xs uppercase tracking-widest text-white/70 font-medium -mb-2">
-          Password
-        </label>
-        <input
-          type="password"
-          placeholder="Create password"
-          className="w-full bg-white/5 border border-white/20 hover:border-white/60 focus:border-white/60 text-white placeholder-white/30 rounded-xl px-5 py-3.5 text-sm outline-none transition-all duration-300"
-        />
-
-        <div className="flex items-center gap-2 -mt-1">
-          <input
-            type="checkbox"
-            id="agreeTerms"
-            className="w-4 h-4 rounded border-white/30 bg-transparent accent-white cursor-pointer"
-          />
-          <label htmlFor="agreeTerms" className="text-xs text-white/70 cursor-pointer select-none">
-            I agree to the Terms & Conditions
-          </label>
-        </div>
-
-        <button
-          type="button"
-          className="w-full border border-white/20 hover:border-white/60 hover:bg-white/10 text-white font-medium tracking-widest uppercase py-3.5 px-6 rounded-xl transition-all duration-500 cursor-pointer text-sm mt-2"
+        <form
+          action=""
+          className="w-full bg-transparent rounded-2xl px-0 py-0 flex flex-col gap-6.5 transition-all duration-500"
         >
-          Register
-        </button>
-      </form>
+          <label className="text-xs uppercase tracking-widest text-white/70 font-medium mb-0">
+            Username
+          </label>
+          <input
+            type="text"
+            placeholder="Your name"
+            className="w-full bg-transparent border-b border-white/30 hover:border-b-white/70 focus:border-b-white text-white placeholder-white/30 px-1 py-4 text-sm outline-none transition-all duration-300 rounded-none"
+          />
 
-      <div className="mt-6 text-center text-xs text-white/60 font-normal">
-        <p style={{ fontFamily: "'Outfit', sans-serif" }}>
-          Already have an account?{" "}
-          <Link to="/login" className="text-white font-semibold hover:underline ml-1">
-            Login here
-          </Link>
-        </p>
+          <label className="text-xs uppercase tracking-widest text-white/70 font-medium mb-0 mt-1">
+            Email
+          </label>
+          <input
+            type="email"
+            placeholder="Your email"
+            className="w-full bg-transparent border-b border-white/30 hover:border-b-white/70 focus:border-b-white text-white placeholder-white/30 px-1 py-4 text-sm outline-none transition-all duration-300 rounded-none"
+          />
+
+          <label className="text-xs uppercase tracking-widest text-white/70 font-medium mb-0 mt-1">
+            Password
+          </label>
+          <input
+            type="password"
+            placeholder="Create password"
+            className="w-full bg-transparent border-b border-white/30 hover:border-b-white/70 focus:border-b-white text-white placeholder-white/30 px-1 py-4 text-sm outline-none transition-all duration-300 rounded-none"
+          />
+
+          <button
+            type="button"
+            className="w-full border border-white/20 hover:border-white/60 hover:bg-white/10 text-white font-medium tracking-widest uppercase py-4 px-6 rounded-xl transition-all duration-500 cursor-pointer text-sm mt-3"
+          >
+            Register
+          </button>
+        </form>
+
+        <div className="mt-5 text-center md:text-left w-full text-xs text-white/60 font-normal">
+          <p style={{ fontFamily: "'Outfit', sans-serif" }}>
+            Already have an account?{" "}
+            <Link to="/login" className="text-white font-semibold hover:underline ml-1">
+              Login here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

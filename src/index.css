@@ -50,6 +50,25 @@ body,
   pointer-events: none;
 }
 
+/* Moving Leaves Background Animation */
+@keyframes moving-leaves {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  25% {
+    transform: translate(-10px, -8px) rotate(0.8deg);
+  }
+  50% {
+    transform: translate(8px, -12px) rotate(-0.6deg);
+  }
+  75% {
+    transform: translate(-8px, 8px) rotate(0.6deg);
+  }
+  100% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+}
+
 @keyframes marquee-scroll {
   0% {
     transform: translateX(0);
