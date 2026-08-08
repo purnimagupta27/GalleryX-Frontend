@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import formBackground from "../assets/form-background.png";
 import { useState } from "react";
 import { register } from "../services/auth.service";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
   const navigate = useNavigate()
@@ -12,35 +13,49 @@ const RegisterPage = () => {
     password: ""
   })
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  // const [error, setError] = useState("")
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError("")
+    // setError("")
     setLoading(true)
 
     try{
       if(!formData.username || !formData.email || !formData.password){
-        setError("Please provide all required details")
+        // setError("Please provide all required details")
+        toast.error("Please provide all required details")
         return 
       }
 
       if(formData.username.trim().length <= 4){
-        setError("Username must have 4 or more characters")
+        //setError("Username must have 4 or more characters")
+        toast.error("Username must have 4 or more characters")
         return 
+      }
+
+      if(!passwordRegex.test(formData.password)){
+        // setError( "Password must contain uppercase, lowercase, number and special character")
+        toast.error("Password must contain uppercase, lowercase, number and special character")
+        return
       }
 
       await register(formData)
       navigate('/login')
     }
+
     catch(err){
       if(err.response?.status === 409){
-        setError("User with this name or email already exists")
+        // setError("User with this name or email already exists")
+        toast.error("User with this name or email already exists")
       }
       else{
-        setError("Something went wrong")
+        // setError("Something went wrong")
+        toast.error("Something went wrong")
       }
     }
+
     finally{
       setLoading(false)
     }
@@ -112,11 +127,11 @@ const RegisterPage = () => {
             {loading ? "Please wait..." : "Register"}
           </button>
 
-          {error && (
+          {/* {error && (
           <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg mb-4">
             {error}
           </div>
-        )}
+        )} */}
         </form>
 
         <div className="mt-5 text-center md:text-left w-full text-xs text-white/60 font-normal">

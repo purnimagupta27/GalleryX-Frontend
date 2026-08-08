@@ -2,24 +2,26 @@ import { Link, useNavigate } from "react-router-dom";
 import formBackground from "../assets/form-background.png";
 import { useState } from "react";
 import { login } from "../services/auth.service";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    identifier: "",
+    email: "",
     password: "",
   });
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    // setError("");
     setLoading(true);
     try {
-      if (!formData.identifier || !formData.password) {
-        setError("Please provide all required details");
+      if (!formData.email || !formData.password) {
+        // setError("Please provide all required details");
+        toast.error("Please provide all required details")
         return;
       }
 
@@ -28,13 +30,18 @@ const LoginPage = () => {
     } 
     catch (err) {
       if (err.response?.status === 404) {
-        setError("User does not exist");
+        // setError("User with this email does not exist");
+        toast.error("User with this email does not exist")
       }
+
       if(err.response?.status === 401){
-        setError("Incorrect password")
+        // setError("Incorrect password")
+        toast.error("Incorrect password")
       } 
+
       else {
-        setError("Something went wrong");
+        // setError("Something went wrong");
+        toast.error("Something went wrong")
       }
     } 
     finally {
@@ -66,13 +73,13 @@ const LoginPage = () => {
           onSubmit={handleSubmit}
         >
           <label className="text-xs uppercase tracking-widest text-white/70 font-medium mb-0">
-            Account
+            Email
           </label>
           <input
             type="text"
-            name="identifier"
-            placeholder="Email or username"
-            value={formData.identifier}
+            name="email"
+            placeholder="Your email"
+            value={formData.email}
             onChange={handleChange}
             className="w-full bg-transparent border-b border-white/30 hover:border-b-white/70 focus:border-b-white text-white placeholder-white/30 px-1 py-4 text-sm outline-none transition-all duration-300 rounded-none"/>
 
@@ -96,11 +103,11 @@ const LoginPage = () => {
             {loading ? "Please wait..." : "Login"}
           </button>
 
-          {error && (
+          {/* {error && (
             <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg mb-4">
               {error}
             </div>
-          )}
+          )} */}
         </form>
 
         <div className="mt-5 text-center md:text-left w-full text-xs text-white/60 font-normal">

@@ -9,7 +9,12 @@ const CTA = () => {
         Join Gallery X today and start sharing your favourite moments, discover
         inspiring creators and build your own visual gallery.
       </p>
-      <button onClick={() => navigate('/register')} className='text-xs sm:text-sm font-medium tracking-widest uppercase text-white/80 hover:text-white border border-white/30 hover:border-white/60 hover:bg-white/10 py-3 sm:py-4 px-8 sm:px-10 rounded-xl transition-all duration-300 cursor-pointer shadow-md'>Get Started</button>
+      <button
+        onClick={() => navigate('/register')}
+        className='text-xs sm:text-sm font-medium tracking-widest uppercase text-white/80 hover:text-white border border-white/30 hover:border-white/60 hover:bg-white/10 py-3 sm:py-3.5 px-5 sm:px-5.5 rounded-xl transition-all duration-300 cursor-pointer shadow-md'
+      >
+        Get Started
+      </button>
     </section>
   );
 };
