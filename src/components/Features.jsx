@@ -12,7 +12,7 @@ const Features = () => {
         className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-wide uppercase text-white/90 text-center mb-12 sm:mb-16"
         style={{ fontFamily: "'Outfit', sans-serif" }}
       >
-        WHY CHOOSE GALLERY X?
+        WHY CHOOSE PIXORA?
       </motion.h2>
 
       <div className="flex flex-col gap-14 sm:gap-20">

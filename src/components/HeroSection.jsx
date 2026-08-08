@@ -9,7 +9,7 @@ const HeroSection = () => {
           className="mt-6 sm:mt-8 text-sm sm:text-base md:text-lg text-white/40 font-normal tracking-wide leading-relaxed max-w-2xl"
           style={{ fontFamily: "'Outfit', sans-serif" }}
         >
-          GalleryX is a place where creativity meets community. <br />
+          Pixora is a place where creativity meets community. <br />
           Share stunning photos, discover inspiring creators <br /> and keep
           your private moments safe.
         </p>

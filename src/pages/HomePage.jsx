@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
-import { feed } from "../services/auth.service";
+import { feed } from "../services/feed.service";
 import { HomeNavbar } from "../components/HomeNavbar";
+import { useNavigate } from "react-router-dom";
+import Shimmer from "../components/Shimmer";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -11,10 +15,11 @@ const HomePage = () => {
       try {
         setLoading(true);
         const imageData = await feed();
-        console.log(imageData);
         setImages(imageData?.data?.data?.posts || []);
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        if (err.response?.status === 401) {
+          navigate("/");
+        }
       } finally {
         setLoading(false);
       }
@@ -26,38 +31,48 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
       <HomeNavbar />
-      <div className="max-w-[1600px] mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
+      <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
         {loading ? (
-          <div className="flex justify-center items-center min-h-[50vh]">
-            <p className="text-white/60 text-sm tracking-wider uppercase">Loading...</p>
-          </div>
+          <Shimmer />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-3.5 sm:gap-4.5 [column-fill:_balance]">
             {images?.map((img) => {
               return (
                 <div
                   key={img.id}
-                  className="relative group aspect-[3/4] w-full rounded-2xl overflow-hidden border border-white/10 select-none
-                             transition-all duration-300 ease-out
-                             hover:scale-[1.03] hover:border-white/40 hover:shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
+                  className="relative group w-full rounded-xl overflow-hidden border border-white/10 select-none
+             mb-3.5 sm:mb-4.5 break-inside-avoid
+             transition-all duration-300 ease-out
+             hover:scale-[1.03] hover:border-white/40 hover:shadow-[0_6px_20px_rgba(255,255,255,0.08)]"
                 >
                   <img
                     src={img.url}
                     alt={img.caption || "Inspiration"}
                     loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                   />
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                  <div
+                    className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent
+               pointer-events-none opacity-0 group-hover:opacity-100
+               transition-opacity duration-300 ease-out"
+                  />
 
-                  <div className="absolute inset-x-3.5 bottom-3.5 p-3.5 sm:p-4 rounded-xl backdrop-blur-md bg-zinc-950/75 border border-transparent shadow-lg transition-all duration-300 group-hover:bg-zinc-950/90">
-                    <p
-                      className="text-xs sm:text-sm font-medium text-white/90 leading-snug line-clamp-2"
-                      style={{ fontFamily: "'Outfit', sans-serif" }}
+                  {img.caption && (
+                    <div
+                      className="absolute inset-x-2.5 bottom-2.5
+                 opacity-0 translate-y-2 pointer-events-none
+                 group-hover:opacity-100 group-hover:translate-y-0
+                 transition-all duration-300 ease-out delay-[50ms]"
                     >
-                      {img.caption}
-                    </p>
-                  </div>
+                      <p
+                        className="text-[11px] sm:text-xs font-normal text-white/80 leading-tight line-clamp-2"
+                        style={{ fontFamily: "'Outfit', sans-serif" }}
+                      >
+                        {img.caption}
+                      </p>
+                    </div>
+                  )}
                 </div>
               );
             })}

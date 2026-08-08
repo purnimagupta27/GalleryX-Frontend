@@ -17,7 +17,7 @@ const Logo = () => {
             className="m-0 text-sm sm:text-xl md:text-2xl text-zinc-500 font-bold tracking-normal uppercase"
             style={{ fontFamily: "'Quicksand', sans-serif" }}
           >
-            GALLERY X
+            PIXORA
           </h1>
         </div>
       </Link>

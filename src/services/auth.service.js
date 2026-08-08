@@ -10,14 +10,10 @@ const login = async (data) => {
     return response.data
 }
 
-const feed = async () => {
-    const response = await API.get('/api/posts/feed')
-    return response.data
-}
+
 
 export {
     register,
-    login,
-    feed
+    login
 }
 
