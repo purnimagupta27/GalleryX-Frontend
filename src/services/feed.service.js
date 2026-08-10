@@ -6,4 +6,4 @@ const feed = async () => {
     return response.data
 }
 
-export{feed}
+export { feed }

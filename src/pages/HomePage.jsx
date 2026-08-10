@@ -8,7 +8,9 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   const [images, setImages] = useState([]);
+  const [filteredImages, setFilteredImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("")
 
   useEffect(() => {
     const fetchImageData = async () => {
@@ -16,6 +18,7 @@ const HomePage = () => {
         setLoading(true);
         const imageData = await feed();
         setImages(imageData?.data?.data?.posts || []);
+        setFilteredImages(imageData?.data?.data?.posts || []);
       } catch (err) {
         if (err.response?.status === 401) {
           navigate("/");
@@ -28,15 +31,21 @@ const HomePage = () => {
     fetchImageData();
   }, []);
 
+  const handleSearch = (e) => {
+    e.preventDefault()
+    const filteredData = images?.filter((img) => img.caption.toLowerCase().includes(search.toLowerCase()))
+    setFilteredImages(filteredData)
+  }
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
-      <HomeNavbar />
+      <HomeNavbar search={search} setSearch={setSearch} handleSearch={handleSearch}/>
       <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
         {loading ? (
           <Shimmer />
         ) : (
           <div className="columns-2 sm:columns-3 md:columns-4 lg:columns-5 gap-3.5 sm:gap-4.5 [column-fill:_balance]">
-            {images?.map((img) => {
+            {filteredImages?.map((img) => {
               return (
                 <div
                   key={img.id}
