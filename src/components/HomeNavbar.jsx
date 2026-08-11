@@ -85,7 +85,6 @@ export const HomeNavbar = ({ search, setSearch, handleSearch }) => {
         </div>
       </div>
 
-      {/* Pop-up Bookmark Modal */}
       <Bookmark isOpen={isBookmarkOpen} onClose={() => setIsBookmarkOpen(false)} />
     </>
   );

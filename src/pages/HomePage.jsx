@@ -37,6 +37,10 @@ const HomePage = () => {
     setFilteredImages(filteredData)
   }
 
+  const handleClick = (postId) => {
+    navigate(`/post/${postId}`)
+  }
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
       <HomeNavbar search={search} setSearch={setSearch} handleSearch={handleSearch}/>
@@ -58,6 +62,8 @@ const HomePage = () => {
                     src={img.url}
                     alt={img.caption || "Inspiration"}
                     loading="lazy"
+                    onClick={() => {handleClick(img.id)}}
+                    
                     className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                   />
 

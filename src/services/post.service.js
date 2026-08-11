@@ -9,4 +9,12 @@ const createPost = async (formData) => {
   return response.data;
 };
 
-export { createPost };
+const getPostById = async (postId) => {
+  const response = await API.get(`/api/posts/post/${postId}`)
+  return response.data
+}
+
+export { 
+  createPost,
+  getPostById
+ };

@@ -73,7 +73,6 @@ const ImageUploadPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col select-none">
-      {/* Top Bar */}
       <div className="flex items-center justify-between px-3 sm:px-6 md:px-10 py-0 sticky top-0 z-50 backdrop-blur-md bg-zinc-950/40 border-b border-white/5 w-full">
         <Logo />
         <div className="flex items-center gap-2 sm:gap-3 mr-0 sm:mr-4 md:mr-20 mt-0 pt-0 shrink-0">
@@ -86,7 +85,6 @@ const ImageUploadPage = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 flex-1 flex flex-col justify-center">
         <div className="text-center sm:text-left mb-8">
           <h1
@@ -101,7 +99,6 @@ const ImageUploadPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-start">
-          {/* Upload Dropzone */}
           <div className="md:col-span-6 flex flex-col items-center">
             <label
               htmlFor="image-upload"
@@ -166,7 +163,6 @@ const ImageUploadPage = () => {
             </label>
           </div>
 
-          {/* Post Details Form */}
           <div className="md:col-span-6 flex flex-col gap-5 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-5 sm:p-6">
             <div>
               <label
