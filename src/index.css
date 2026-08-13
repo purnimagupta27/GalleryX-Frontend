@@ -8,6 +8,10 @@ body,
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .landing-hero-bg {
   position: relative;
   isolation: isolate;

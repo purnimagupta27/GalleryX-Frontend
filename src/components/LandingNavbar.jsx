@@ -6,12 +6,12 @@ const LandingNavbar = () => {
     <div className="flex items-center justify-between px-3 sm:px-6 md:px-10 py-0 sticky top-0 z-50 backdrop-blur-md bg-zinc-950/30">
       <Logo />
       <div className="flex items-center gap-2 sm:gap-6 md:gap-10 mr-0 sm:mr-4 md:mr-20 mt-0 pt-0 shrink-0">
-        <Link className="text-[11px] sm:text-xs md:text-sm font-normal tracking-wider sm:tracking-widest uppercase text-white/60 hover:text-white transition-colors duration-300">
+        <a href="#masonry" className="text-[11px] sm:text-xs md:text-sm font-normal tracking-wider sm:tracking-widest uppercase text-white/60 hover:text-white transition-colors duration-300">
           Explore
-        </Link>
-        <Link className="text-[11px] sm:text-xs md:text-sm font-normal tracking-wider sm:tracking-widest uppercase text-white/60 hover:text-white transition-colors duration-300">
+        </a>
+        <a href="#features" className="text-[11px] sm:text-xs md:text-sm font-normal tracking-wider sm:tracking-widest uppercase text-white/60 hover:text-white transition-colors duration-300">
           Features
-        </Link>
+        </a>
         <Link to="/login" className="text-[11px] sm:text-xs md:text-sm font-normal tracking-wider sm:tracking-widest uppercase text-white/60 hover:text-white transition-colors duration-300">
           Login
         </Link>

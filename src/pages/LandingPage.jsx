@@ -10,8 +10,12 @@ const LandingPage = () => {
     <div className="landing-hero-bg min-h-screen bg-zinc-950 text-white">
       <LandingNavbar />
       <HeroSection />
-      <Masonry />
-      <Features />
+      <section id="masonry">
+        <Masonry />
+      </section>
+      <section id="features">
+        <Features />
+      </section>
       <CTA />
       <Footer />
     </div>

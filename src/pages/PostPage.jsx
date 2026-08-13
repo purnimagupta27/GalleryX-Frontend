@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPostById } from "../services/post.service";
-import { Heart, MessageCircle, Download, Bookmark, ArrowLeft, User } from "lucide-react";
+import { MessageCircle, Download, Bookmark, ArrowLeft, User } from "lucide-react";
+import {Likes} from "../components/Likes";
 
 const PostPage = () => {
     const { postId } = useParams();
@@ -47,22 +48,27 @@ const PostPage = () => {
     }
 
     return (
-        <div className="h-screen w-screen bg-zinc-950 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
+        <div className="relative h-screen w-screen bg-zinc-950 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
+            {post?.url && (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                    <img
+                        src={post.url}
+                        alt=""
+                        aria-hidden="true"
+                        className="w-full h-full object-cover select-none brightness-75"
+                    />
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-[4px]" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
+                </div>
+            )}
 
             {loading ? (
-                <div className="w-full max-w-md sm:max-w-lg h-full max-h-[92vh] bg-zinc-900/80 rounded-2xl sm:rounded-3xl border border-white/15 animate-pulse flex flex-col items-center justify-center gap-3">
+                <div className="relative z-10 w-full max-w-md sm:max-w-lg h-full max-h-[92vh] bg-zinc-900/80 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-white/15 animate-pulse flex flex-col items-center justify-center gap-3">
                     <div className="w-12 h-12 rounded-full border-2 border-white/20 border-t-rose-500 animate-spin" />
                     <p className="text-white/40 text-xs tracking-wider uppercase font-medium">Loading Post...</p>
                 </div>
             ) : post ? (
-                <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl h-full max-h-[92vh] bg-black rounded-2xl sm:rounded-3xl overflow-hidden border border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.8)] flex items-center justify-center">
-                    
-                    <img
-                        src={post?.url}
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-35 scale-110 pointer-events-none select-none"
-                    />
+                <div className="relative z-10 w-full max-w-md sm:max-w-lg md:max-w-xl h-full max-h-[92vh] bg-black/80 backdrop-blur-md rounded-2xl sm:rounded-3xl overflow-hidden border border-white/20 shadow-[0_0_50px_rgba(0,0,0,0.8)] flex items-center justify-center">
 
                     <img
                         src={post?.url}
@@ -77,21 +83,11 @@ const PostPage = () => {
                         className="absolute top-4 left-4 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white/90 hover:text-white hover:bg-black/60 transition-all cursor-pointer shadow-lg"
                         title="Go back"
                     >
-                        <ArrowLeft className="w-5 h-5 sm:w-6 sm:sm-6" />
+                        <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                     </button>
 
                     <div className="absolute right-3 sm:right-4 bottom-28 sm:bottom-32 z-20 flex flex-col items-center gap-5 sm:gap-6">
-                        <button className="flex flex-col items-center gap-1 text-white cursor-pointer group">
-                            <div className="p-2.5 rounded-full bg-black/35 backdrop-blur-md border border-white/10 group-hover:bg-red-500/20 group-hover:border-red-500/40 transition-all">
-                                <Heart className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow group-hover:scale-110 group-hover:text-red-400 transition-transform duration-200" />
-                            </div>
-                            <span
-                                className="text-xs font-semibold text-white/90 drop-shadow-md"
-                                style={{ fontFamily: "'Outfit', sans-serif" }}
-                            >
-                                {post?.likes?.likesCount ?? 0}
-                            </span>
-                        </button>
+                        <Likes post={post} />
 
                         <button className="flex flex-col items-center gap-1 text-white cursor-pointer group">
                             <div className="p-2.5 rounded-full bg-black/35 backdrop-blur-md border border-white/10 group-hover:bg-blue-500/20 group-hover:border-blue-500/40 transition-all">
@@ -164,7 +160,6 @@ const PostPage = () => {
                             </button>
                         </div>
 
-                        {/* Caption */}
                         {post?.caption && (
                             <p
                                 className="text-xs sm:text-sm text-white/90 leading-relaxed drop-shadow-md line-clamp-3 font-normal"
@@ -177,7 +172,7 @@ const PostPage = () => {
 
                 </div>
             ) : (
-                <div className="h-full w-full flex items-center justify-center">
+                <div className="relative z-10 h-full w-full flex items-center justify-center">
                     <p className="text-white/40 text-sm" style={{ fontFamily: "'Outfit', sans-serif" }}>
                         Post not found.
                     </p>

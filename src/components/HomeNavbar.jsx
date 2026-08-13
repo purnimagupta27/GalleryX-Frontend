@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import Logo from "./Logo";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Bookmark from "./Bookmark";
+import ImageUpload from "./ImageUpload";
 
-export const HomeNavbar = ({ search, setSearch, handleSearch }) => {
+export const HomeNavbar = ({ onPostCreated }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isBookmarkOpen, setIsBookmarkOpen] = useState(false);
-  const navigate = useNavigate();
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -28,19 +29,6 @@ export const HomeNavbar = ({ search, setSearch, handleSearch }) => {
     <>
       <div className="flex items-center justify-between px-3 sm:px-6 md:px-10 py-0 sticky top-0 z-50 backdrop-blur-md bg-zinc-950/40 w-full">
         <Logo />
-        
-        <form 
-          onSubmit={handleSearch}
-          className="hidden md:flex items-center flex-1 max-w-xs lg:max-w-sm mx-4"
-        >
-          <input
-            type="text"
-            placeholder="Search categories..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white/5 border border-white/15 focus:border-white/50 text-white placeholder-white/40 px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-xl outline-none transition-all duration-300"
-          />
-        </form>
 
         <div className="flex items-center gap-2 sm:gap-3 mr-0 sm:mr-4 md:mr-20 mt-0 pt-0 shrink-0">
           <div className="relative" ref={dropdownRef}>
@@ -57,7 +45,7 @@ export const HomeNavbar = ({ search, setSearch, handleSearch }) => {
                 <button
                   onClick={() => {
                     setIsOpen(false);
-                    navigate("/create-post");
+                    setIsUploadOpen(true);
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer"
                 >
@@ -86,6 +74,11 @@ export const HomeNavbar = ({ search, setSearch, handleSearch }) => {
       </div>
 
       <Bookmark isOpen={isBookmarkOpen} onClose={() => setIsBookmarkOpen(false)} />
+      <ImageUpload 
+        isOpen={isUploadOpen} 
+        onClose={() => setIsUploadOpen(false)} 
+        onPostCreated={onPostCreated} 
+      />
     </>
   );
 };
