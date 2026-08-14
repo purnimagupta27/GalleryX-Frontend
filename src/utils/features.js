@@ -8,13 +8,13 @@ const features = [
   {
     title: "SHARE YOUR CREATIVITY",
     description:
-      "Every photo has a story worth sharing. Upload your favorite moments, express your unique style and inspire a community through your creativity. From stunning scenery to everyday memories, your images can spark emotions, start conversations, and leave a lasting impression.",
+      "Every photo has a story worth sharing. Upload your favorite moments, express your unique style and inspire a community through your creativity. From stunning scenery to everyday memories, your images can spark emotions, start conversations and leave a lasting impression.",
     image: featureShare,
   },
   {
     title: "LIKE WHAT YOU LOVE",
     description:
-      "Celebrate the creativity that inspires you. Like your favorite photos, support talented creators and help great content reach more people. Every interaction strengthens the community and encourages others to keep creating and sharing.",
+      "Celebrate the creativity that inspires you. Like your favourite photos, support talented creators and help great content reach more people. Every interaction strengthens the community and encourages others to keep creating and sharing.",
     image: featureLike,
   },
   {
@@ -26,7 +26,7 @@ const features = [
   {
     title: "FOLLOW AMAZING CREATORS",
     description:
-      "Stay connected with inspiring people. Follow your favorite creators and discover their latest photos and creative work in your personalized feed. Never miss a new upload, explore fresh ideas and build a community around the creators who inspire you the most.",
+      "Stay connected with inspiring people. Follow your favourite creators and discover their latest photos and creative work in your personalized feed. Never miss a new upload, explore fresh ideas and build a community around the creators who inspire you the most.",
     image: featureFollow,
   },
   {

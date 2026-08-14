@@ -5,8 +5,8 @@ const likePost = async(postId) => {
     return response.data
 }
 
-const unlikePost = async(likeId) => {
-    const response = await API.delete(`/api/likes/${likeId}`)
+const unlikePost = async(postId) => {
+    const response = await API.delete(`/api/likes/${postId}`)
     return response.data
 }
 
