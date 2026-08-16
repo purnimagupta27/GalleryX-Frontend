@@ -4,7 +4,8 @@ import { likePost, unlikePost } from "../services/likes.service";
 import toast from "react-hot-toast";
 
 export const Likes = ({ post }) => {
-  const [isLiked, setIsLiked] = useState();
+  console.log(post)
+  const [isLiked, setIsLiked] = useState(post?.likes?.isLiked);
   const [likeId, setLikeId] = useState(post?.likeId);
   const [likesCount, setLikesCount] = useState(post?.likes?.likesCount);
 

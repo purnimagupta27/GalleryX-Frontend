@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getPostById } from "../services/post.service";
-import { MessageCircle, Download, Bookmark, ArrowLeft, User } from "lucide-react";
+import { Download, Bookmark, ArrowLeft, User } from "lucide-react";
 import {Likes} from "../components/Likes";
+import { Comments } from "../components/Comments";
 
 const PostPage = () => {
     const { postId } = useParams();
@@ -16,8 +17,8 @@ const PostPage = () => {
             try {
                 setLoading(true)
                 const response = await getPostById(postId)
-                console.log(response.data)
                 setPost(response.data)
+                console.log(response.data)
             }
             catch (err) {
                 console.log(err)
@@ -89,17 +90,7 @@ const PostPage = () => {
                     <div className="absolute right-3 sm:right-4 bottom-28 sm:bottom-32 z-20 flex flex-col items-center gap-5 sm:gap-6">
                         <Likes post={post} />
 
-                        <button className="flex flex-col items-center gap-1 text-white cursor-pointer group">
-                            <div className="p-2.5 rounded-full bg-black/35 backdrop-blur-md border border-white/10 group-hover:bg-blue-500/20 group-hover:border-blue-500/40 transition-all">
-                                <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow group-hover:scale-110 group-hover:text-blue-400 transition-transform duration-200" />
-                            </div>
-                            <span
-                                className="text-xs font-semibold text-white/90 drop-shadow-md"
-                                style={{ fontFamily: "'Outfit', sans-serif" }}
-                            >
-                                {post?.comments?.commentsCount ?? 0}
-                            </span>
-                        </button>
+                        <Comments post={post}/>
 
                         <button className="flex flex-col items-center gap-1 text-white cursor-pointer group">
                             <div className="p-2.5 rounded-full bg-black/35 backdrop-blur-md border border-white/10 group-hover:bg-amber-500/20 group-hover:border-amber-500/40 transition-all">
