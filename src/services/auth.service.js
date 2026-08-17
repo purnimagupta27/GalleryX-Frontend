@@ -10,10 +10,16 @@ const login = async (data) => {
     return response.data
 }
 
+const getMe = async () => {
+    const response = await API.get('/api/auth/me')
+    return response.data
+}
+
 
 
 export {
     register,
-    login
+    login,
+    getMe
 }
 

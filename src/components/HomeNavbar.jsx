@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import Logo from "./Logo";
-import { Link } from "react-router-dom";
 import Bookmark from "./Bookmark";
 import ImageUpload from "./ImageUpload";
+import { useNavigate } from "react-router-dom";
 
 export const HomeNavbar = ({ onPostCreated }) => {
-  // const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate()
+
   const [activeDropdown, setActiveDropdown] = useState(null)
   const [isBookmarkOpen, setIsBookmarkOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -78,7 +79,8 @@ export const HomeNavbar = ({ onPostCreated }) => {
               <div className="absolute right-0 top-full mt-2 flex flex-col gap-1 p-1.5 bg-zinc-950/90 backdrop-blur-md border border-white/15 rounded-xl shadow-xl z-50 min-w-[150px]">
                 <button
                   onClick={() => {
-                    
+                    setActiveDropdown(null);
+                    navigate('/profile');
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer"
                 >
@@ -86,7 +88,8 @@ export const HomeNavbar = ({ onPostCreated }) => {
                 </button>
                 <button
                   onClick={() => {
-                    
+                    setActiveDropdown(null);
+                    setIsBookmarkOpen(true);
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer"
                 >
@@ -94,7 +97,8 @@ export const HomeNavbar = ({ onPostCreated }) => {
                 </button>
                 <button
                   onClick={() => {
-                    
+                    setActiveDropdown(null);
+                    // navigate('/');
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer"
                 >
