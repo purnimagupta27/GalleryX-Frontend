@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { getMe } from "../services/auth.service";
 import HomeNavbar from "../components/HomeNavbar";
 import { Lock } from "lucide-react";
-import { UserPost } from "../components/UserPost";
+import { useNavigate } from "react-router-dom";
 
 const getColumnCount = () => {
   if (typeof window === "undefined") return 2;
@@ -17,7 +17,8 @@ export const ProfilePage = () => {
   const [userProfile, setUserProfile] = useState(null);
   const [columnCount, setColumnCount] = useState(getColumnCount());
   const [activeTab, setActiveTab] = useState("all");
-  const [selectedPost, setSelectedPost] = useState(null);
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleResize = () => setColumnCount(getColumnCount());
@@ -173,7 +174,7 @@ export const ProfilePage = () => {
                       src={img.url}
                       alt={img.caption || "Pin"}
                       loading="lazy"
-                      onClick={() => setSelectedPost(img)}
+                      onClick={() => navigate(`/post/${img.id}`)}
                       className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-105 cursor-pointer"
                     />
 
@@ -205,13 +206,6 @@ export const ProfilePage = () => {
           </div>
         )}
       </div>
-
-      {selectedPost && (
-        <UserPost
-          col={selectedPost}
-          onClose={() => setSelectedPost(null)}
-        />
-      )}
     </div>
   );
 };
