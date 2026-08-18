@@ -4,7 +4,6 @@ import { likePost, unlikePost } from "../services/likes.service";
 import toast from "react-hot-toast";
 
 export const Likes = ({ post }) => {
-  console.log(post)
   const [isLiked, setIsLiked] = useState(post?.likes?.isLiked);
   const [likeId, setLikeId] = useState(post?.likeId);
   const [likesCount, setLikesCount] = useState(post?.likes?.likesCount);
@@ -18,7 +17,6 @@ export const Likes = ({ post }) => {
         setLikesCount((prev) => prev - 1);
       } else {
         const response = await likePost(post.id);
-        console.log(response)
         setIsLiked(true);
         setLikeId(response.data.likeId);
         setLikesCount((prev) => prev + 1);

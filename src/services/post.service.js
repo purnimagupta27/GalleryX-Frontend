@@ -14,7 +14,13 @@ const getPostById = async (postId) => {
   return response.data
 }
 
-export { 
+const getMyPostById = async (postId) => {
+  const response = await API.get(`/api/posts/my-post/${postId}`)
+  return response.data
+}
+
+export {
   createPost,
-  getPostById
- };
+  getPostById,
+  getMyPostById
+};

@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { getMe } from "../services/auth.service";
 import HomeNavbar from "../components/HomeNavbar";
-import { useNavigate } from "react-router-dom";
+import { Lock } from "lucide-react";
+import { UserPost } from "../components/UserPost";
 
 const getColumnCount = () => {
   if (typeof window === "undefined") return 2;
@@ -13,9 +14,10 @@ const getColumnCount = () => {
 };
 
 export const ProfilePage = () => {
-  const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState(null);
   const [columnCount, setColumnCount] = useState(getColumnCount());
+  const [activeTab, setActiveTab] = useState("all");
+  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     const handleResize = () => setColumnCount(getColumnCount());
@@ -33,7 +35,16 @@ export const ProfilePage = () => {
     profile();
   }, []);
 
-  const posts = userProfile?.posts || [];
+  const posts = useMemo(() => {
+    const all = userProfile?.posts || [];
+    if (activeTab === "public") {
+      return all.filter((post) => !post.isPrivate);
+    }
+    if (activeTab === "private") {
+      return all.filter((post) => Boolean(post.isPrivate));
+    }
+    return all;
+  }, [userProfile, activeTab]);
 
   const columns = useMemo(() => {
     const cols = Array.from({ length: columnCount }, () => []);
@@ -61,7 +72,7 @@ export const ProfilePage = () => {
         <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-rose-500/30 via-white/15 to-purple-500/30 p-1 mb-4 shadow-2xl flex items-center justify-center border border-white/15">
           {userProfile?.user?.url ? (
             <img
-              src={userProfile.user.url}
+              src={userProfile?.user?.url}
               alt={userProfile?.user?.username}
               className="w-full h-full rounded-full object-cover"
             />
@@ -91,6 +102,36 @@ export const ProfilePage = () => {
         </p>
       </div>
 
+      <div className="flex items-center justify-center gap-2 mt-4 mb-2">
+        <button
+          onClick={() => setActiveTab("all")}
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${activeTab === "all"
+            ? "bg-white text-zinc-950 font-semibold shadow-md"
+            : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
+            }`}
+        >
+          All posts
+        </button>
+        <button
+          onClick={() => setActiveTab("public")}
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${activeTab === "public"
+            ? "bg-white text-zinc-950 font-semibold shadow-md"
+            : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
+            }`}
+        >
+          Public posts
+        </button>
+        <button
+          onClick={() => setActiveTab("private")}
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${activeTab === "private"
+            ? "bg-white text-zinc-950 font-semibold shadow-md"
+            : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
+            }`}
+        >
+          Private posts
+        </button>
+      </div>
+
       <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
         {posts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -115,11 +156,24 @@ export const ProfilePage = () => {
                       transition-all duration-300 ease-out
                       hover:scale-[1.03] hover:border-white/40 hover:shadow-[0_6px_20px_rgba(255,255,255,0.08)]"
                   >
+                    {img.isPrivate && (
+                      <div
+                        className="absolute top-2.5 left-2.5
+                          opacity-0 -translate-y-1 pointer-events-none
+                          group-hover:opacity-100 group-hover:translate-y-0
+                          transition-all duration-300 ease-out delay-[50ms] z-10"
+                      >
+                        <div className="p-1.5 rounded-full bg-black/60 backdrop-blur-md text-white border border-white/20 flex items-center justify-center">
+                          <Lock className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
+                    )}
+
                     <img
                       src={img.url}
                       alt={img.caption || "Pin"}
                       loading="lazy"
-                      onClick={() => img.id && navigate(`/post/${img.id}`)}
+                      onClick={() => setSelectedPost(img)}
                       className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-105 cursor-pointer"
                     />
 
@@ -151,8 +205,16 @@ export const ProfilePage = () => {
           </div>
         )}
       </div>
+
+      {selectedPost && (
+        <UserPost
+          col={selectedPost}
+          onClose={() => setSelectedPost(null)}
+        />
+      )}
     </div>
   );
 };
 
 export default ProfilePage;
+

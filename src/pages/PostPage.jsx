@@ -4,6 +4,8 @@ import { getPostById } from "../services/post.service";
 import { Download, Bookmark, ArrowLeft, User } from "lucide-react";
 import {Likes} from "../components/Likes";
 import { Comments } from "../components/Comments";
+import toast from "react-hot-toast";
+import { getMe } from "../services/auth.service";
 
 const PostPage = () => {
     const { postId } = useParams();
@@ -11,6 +13,7 @@ const PostPage = () => {
 
     const [post, setPost] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [currentUser, setCurrentUser] = useState(null)
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -18,10 +21,9 @@ const PostPage = () => {
                 setLoading(true)
                 const response = await getPostById(postId)
                 setPost(response.data)
-                console.log(response.data)
             }
-            catch (err) {
-                console.log(err)
+            catch{
+                toast.error("Something went wrong")
             }
             finally {
                 setLoading(false)
@@ -29,6 +31,15 @@ const PostPage = () => {
         }
         fetchPost()
     }, [postId])
+
+    useEffect(() => {
+        const fetchUser = async() => {
+            const response = await getMe()
+            setCurrentUser(response.data)
+            console.log(response.data)
+        }
+        fetchUser()
+    }, [])
 
     const handleDownload = async () => {
         if (!post?.url) return
@@ -143,12 +154,14 @@ const PostPage = () => {
                                 {post?.user?.username || "Unknown"}
                             </span>
 
-                            <button
+                            {post?.user?.userId !== currentUser?.user?.id && (
+                                <button
                                 className="ml-1 px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full bg-white text-black text-xs font-bold hover:bg-white/90 active:scale-95 transition-all cursor-pointer shadow-md shrink-0"
                                 style={{ fontFamily: "'Outfit', sans-serif" }}
                             >
                                 Follow
                             </button>
+                            )}
                         </div>
 
                         {post?.caption && (
