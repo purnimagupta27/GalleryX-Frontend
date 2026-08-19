@@ -14,13 +14,15 @@ const getPostById = async (postId) => {
   return response.data
 }
 
-const getMyPostById = async (postId) => {
-  const response = await API.get(`/api/posts/my-post/${postId}`)
+const deleteMyPostById = async(postId) => {
+  const response = await API.delete(`/api/posts/my-post/${postId}`)
   return response.data
 }
+
+
 
 export {
   createPost,
   getPostById,
-  getMyPostById
+  deleteMyPostById
 };

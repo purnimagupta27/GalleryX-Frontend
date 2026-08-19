@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getPostById } from "../services/post.service";
+import { deleteMyPostById, getPostById } from "../services/post.service";
 import { Download, Bookmark, ArrowLeft, User, MoreVertical, Pencil, Trash2, Lock } from "lucide-react";
 import { Likes } from "../components/Likes";
 import { Comments } from "../components/Comments";
@@ -59,6 +59,17 @@ const PostPage = () => {
     fetchUser();
   }, []);
 
+  const handleDelete = async() => {
+    try{
+      await deleteMyPostById(postId)
+      toast.success("Post deleted")
+      navigate('/profile')
+    }
+    catch{
+      toast.error("Something went wrong")
+    }
+  }
+
   const handleDownload = async () => {
     if (!post?.url) return;
     try {
@@ -113,7 +124,6 @@ const PostPage = () => {
 
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/85 via-transparent to-black/40 pointer-events-none" />
 
-          {/* Top Left Back Button */}
           <button
             onClick={() => navigate(-1)}
             className="absolute top-4 left-4 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white/90 hover:text-white hover:bg-black/60 transition-all cursor-pointer shadow-lg"
@@ -122,7 +132,6 @@ const PostPage = () => {
             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
-          {/* Top Right Controls (Private Lock Badge & 3-Dot Options for Owner) */}
           <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
             {post?.isPrivate && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase shadow-lg">
@@ -158,6 +167,7 @@ const PostPage = () => {
                       type="button"
                       onClick={() => {
                         setShowMenu(false);
+                        handleDelete()
                       }}
                       className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs sm:text-sm text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors text-left cursor-pointer"
                     >
