@@ -3,11 +3,13 @@ import Logo from "./Logo";
 import Bookmark from "./Bookmark";
 import ImageUpload from "./ImageUpload";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../services/auth.service";
+import toast from "react-hot-toast";
 
 export const HomeNavbar = ({ onPostCreated }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [activeDropdown, setActiveDropdown] = useState(null)
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const [isBookmarkOpen, setIsBookmarkOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -27,16 +29,30 @@ export const HomeNavbar = ({ onPostCreated }) => {
     };
   }, [activeDropdown]);
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
   return (
     <>
       <div className="flex items-center justify-between px-3 sm:px-6 md:px-10 py-0 sticky top-0 z-50 backdrop-blur-md bg-zinc-950/40 w-full">
         <Logo />
 
-        <div ref={dropdownRef} className="flex items-center gap-2 sm:gap-3 mr-0 sm:mr-4 md:mr-20 mt-0 pt-0 shrink-0">
+        <div
+          ref={dropdownRef}
+          className="flex items-center gap-2 sm:gap-3 mr-0 sm:mr-4 md:mr-20 mt-0 pt-0 shrink-0"
+        >
           <div className="relative">
             <button
               type="button"
-              onClick={() => setActiveDropdown(activeDropdown === "create" ? null : "create")}
+              onClick={() =>
+                setActiveDropdown(activeDropdown === "create" ? null : "create")
+              }
               className="border border-white/20 hover:border-white/60 hover:bg-white/10 text-white font-medium tracking-wider sm:tracking-widest uppercase py-2 px-4 sm:py-2.5 sm:px-5 rounded-xl transition-all duration-300 cursor-pointer text-xs sm:text-sm backdrop-blur-md bg-zinc-950/40 shrink-0 whitespace-nowrap flex items-center justify-center"
             >
               + Create
@@ -69,7 +85,11 @@ export const HomeNavbar = ({ onPostCreated }) => {
           <div className="relative">
             <button
               type="button"
-              onClick={() => setActiveDropdown(activeDropdown === "account" ? null : "account")}
+              onClick={() =>
+                setActiveDropdown(
+                  activeDropdown === "account" ? null : "account",
+                )
+              }
               className="border border-white/20 hover:border-white/60 hover:bg-white/10 text-white font-medium tracking-wider sm:tracking-widest uppercase py-2 px-4 sm:py-2.5 sm:px-5 rounded-xl transition-all duration-300 cursor-pointer text-xs sm:text-sm backdrop-blur-md bg-zinc-950/40 shrink-0 whitespace-nowrap flex items-center justify-center"
             >
               Account
@@ -80,7 +100,7 @@ export const HomeNavbar = ({ onPostCreated }) => {
                 <button
                   onClick={() => {
                     setActiveDropdown(null);
-                    navigate('/profile');
+                    navigate("/profile");
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer"
                 >
@@ -97,8 +117,8 @@ export const HomeNavbar = ({ onPostCreated }) => {
                 </button>
                 <button
                   onClick={() => {
-                    setActiveDropdown(null);
-                    // navigate('/');
+                    setActiveDropdown(null)
+                    handleLogout()
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer"
                 >
@@ -110,11 +130,14 @@ export const HomeNavbar = ({ onPostCreated }) => {
         </div>
       </div>
 
-      <Bookmark isOpen={isBookmarkOpen} onClose={() => setIsBookmarkOpen(false)} />
-      <ImageUpload 
-        isOpen={isUploadOpen} 
-        onClose={() => setIsUploadOpen(false)} 
-        onPostCreated={onPostCreated} 
+      <Bookmark
+        isOpen={isBookmarkOpen}
+        onClose={() => setIsBookmarkOpen(false)}
+      />
+      <ImageUpload
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onPostCreated={onPostCreated}
       />
     </>
   );

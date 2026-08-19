@@ -15,11 +15,17 @@ const getMe = async () => {
     return response.data
 }
 
+const logout = async() => {
+    const response = await API.post('/api/auth/logout')
+    return response.data
+}
+
 
 
 export {
     register,
     login,
-    getMe
+    getMe,
+    logout
 }
 

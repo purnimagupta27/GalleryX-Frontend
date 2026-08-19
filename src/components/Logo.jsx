@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Logo = () => {
   return (
     <div>
-      <Link to="/" className="flex items-center ml-0 sm:ml-4 md:ml-16 py-2 gap-0 cursor-pointer">
+      <Link to="/homepage" className="flex items-center ml-0 sm:ml-4 md:ml-16 py-2 gap-0 cursor-pointer">
         <div className="w-10 sm:w-14 md:w-18 shrink-0">
           <img
             src={logo}
@@ -25,4 +25,4 @@ const Logo = () => {
   );
 };
 
-export default Logo;
+export default Logo;
