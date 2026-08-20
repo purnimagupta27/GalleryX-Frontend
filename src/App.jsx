@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import PostPage from "./pages/PostPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import UserProfilePage from "./pages/UserProfilePage";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/post/:postId" element={<PostPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:userId" element={<UserProfilePage />} />
       </Routes>
     </>
   );

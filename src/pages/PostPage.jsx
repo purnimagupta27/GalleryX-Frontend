@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { deleteMyPostById, getPostById } from "../services/post.service";
 import { Download, Bookmark, ArrowLeft, User, MoreVertical, Pencil, Trash2, Lock } from "lucide-react";
 import { Likes } from "../components/Likes";
@@ -229,12 +229,13 @@ const PostPage = () => {
                 )}
               </div>
 
-              <span
+              <Link
+                to={`/profile/${post?.user?.userId}`}
                 className="text-sm sm:text-base font-bold text-white drop-shadow-md truncate"
                 style={{ fontFamily: "'Outfit', sans-serif" }}
               >
                 {post?.user?.username || "Unknown"}
-              </span>
+              </Link>
 
               {post?.user?.userId !== currentUser?.user?.id && (
                 <button
