@@ -59,13 +59,13 @@ const PostPage = () => {
     fetchUser();
   }, []);
 
-  const handleDelete = async() => {
-    try{
+  const handleDelete = async () => {
+    try {
       await deleteMyPostById(postId)
       toast.success("Post deleted")
       navigate('/profile')
     }
-    catch{
+    catch {
       toast.error("Something went wrong")
     }
   }

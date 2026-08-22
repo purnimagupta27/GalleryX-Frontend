@@ -71,19 +71,11 @@ export const ProfilePage = () => {
 
       <div className="flex flex-col items-center justify-center mt-10 text-center px-4">
         <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-rose-500/30 via-white/15 to-purple-500/30 p-1 mb-4 shadow-2xl flex items-center justify-center border border-white/15">
-          {userProfile?.user?.url ? (
-            <img
-              src={userProfile?.user?.url}
-              alt={userProfile?.user?.username}
-              className="w-full h-full rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center">
-              <span className="text-3xl sm:text-4xl font-bold text-white uppercase select-none">
-                {userProfile?.user?.username?.[0]?.toUpperCase() || "U"}
-              </span>
-            </div>
-          )}
+          <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center">
+            <span className="text-3xl sm:text-4xl font-bold text-white uppercase select-none">
+              {userProfile?.user?.username?.[0]?.toUpperCase() || "U"}
+            </span>
+          </div>
         </div>
 
         <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white capitalize">
@@ -106,28 +98,31 @@ export const ProfilePage = () => {
       <div className="flex items-center justify-center gap-2 mt-4 mb-2">
         <button
           onClick={() => setActiveTab("all")}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${activeTab === "all"
-            ? "bg-white text-zinc-950 font-semibold shadow-md"
-            : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
-            }`}
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${
+            activeTab === "all"
+              ? "bg-white text-zinc-950 font-semibold shadow-md"
+              : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
+          }`}
         >
           All posts
         </button>
         <button
           onClick={() => setActiveTab("public")}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${activeTab === "public"
-            ? "bg-white text-zinc-950 font-semibold shadow-md"
-            : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
-            }`}
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${
+            activeTab === "public"
+              ? "bg-white text-zinc-950 font-semibold shadow-md"
+              : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
+          }`}
         >
           Public posts
         </button>
         <button
           onClick={() => setActiveTab("private")}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${activeTab === "private"
-            ? "bg-white text-zinc-950 font-semibold shadow-md"
-            : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
-            }`}
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${
+            activeTab === "private"
+              ? "bg-white text-zinc-950 font-semibold shadow-md"
+              : "bg-zinc-900/60 border border-white/10 text-zinc-400 hover:text-white hover:border-white/20"
+          }`}
         >
           Private posts
         </button>
@@ -211,4 +206,5 @@ export const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
 
