@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { editMyPostById } from "../services/post.service";
 import toast from "react-hot-toast";
 import { X, Loader2 } from "lucide-react";
@@ -9,6 +9,15 @@ export const EditPost = ({ postId, post, onClose, onPostUpdated }) => {
     isPrivate: Boolean(post?.isPrivate),
   });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (post) {
+      setEditedPost({
+        caption: post.caption ?? "",
+        isPrivate: Boolean(post.isPrivate),
+      });
+    }
+  }, [post]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,7 +90,10 @@ export const EditPost = ({ postId, post, onClose, onPostUpdated }) => {
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 bg-white/5 border border-white/10 rounded-xl">
+          <label
+            htmlFor="edit-isPrivate"
+            className="flex items-center justify-between p-3 bg-white/5 border border-white/10 hover:border-white/20 rounded-xl cursor-pointer transition-colors select-none"
+          >
             <div>
               <p
                 className="text-xs font-medium text-white/90"
@@ -99,13 +111,16 @@ export const EditPost = ({ postId, post, onClose, onPostUpdated }) => {
             <input
               id="edit-isPrivate"
               type="checkbox"
-              checked={editedPost.isPrivate}
+              checked={Boolean(editedPost.isPrivate)}
               onChange={(e) =>
-                setEditedPost({ ...editedPost, isPrivate: e.target.checked })
+                setEditedPost((prev) => ({
+                  ...prev,
+                  isPrivate: e.target.checked,
+                }))
               }
               className="w-4 h-4 rounded cursor-pointer accent-white"
             />
-          </div>
+          </label>
 
           <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-white/10 mt-1">
             {onClose && (
