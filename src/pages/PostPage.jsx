@@ -63,7 +63,7 @@ const PostPage = () => {
     try {
       await deleteMyPostById(postId)
       toast.success("Post deleted")
-      navigate('/profile')
+      navigate(-1)
     }
     catch {
       toast.error("Something went wrong")

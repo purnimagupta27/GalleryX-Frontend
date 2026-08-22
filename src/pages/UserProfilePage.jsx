@@ -3,6 +3,9 @@ import { getUserProfile } from "../services/user.service";
 import { useParams, useNavigate } from "react-router-dom";
 import HomeNavbar from "../components/HomeNavbar";
 import { Lock } from "lucide-react";
+import { getMe } from "../services/auth.service";
+import ProfilePage from "./ProfilePage";
+import toast from "react-hot-toast";
 
 const getColumnCount = () => {
   if (typeof window === "undefined") return 2;
@@ -19,12 +22,30 @@ const UserProfilePage = () => {
 
   const [userProfile, setUserProfile] = useState(null);
   const [columnCount, setColumnCount] = useState(getColumnCount());
+  const [currentUser, setCurrentUser] = useState(null)
+  const [currentUserLoading, setCurrentUserLoading] = useState(true)
 
   useEffect(() => {
     const handleResize = () => setColumnCount(getColumnCount());
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    try{
+        const fetchUser = async() => {
+        const response = await getMe()
+        setCurrentUser(response.data)
+    }
+    fetchUser()
+    }
+    catch{
+        toast.error("Something went wrong")
+    }
+    finally{
+        setCurrentUserLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -62,6 +83,18 @@ const UserProfilePage = () => {
       </div>
     );
   }
+
+  if(currentUserLoading || !userProfile){
+    return(
+        <div>
+            loading...
+        </div>
+    )
+  }
+
+  const isOwner = (userProfile?.user?.id === currentUser?.user?.id)
+
+  if(isOwner) return <ProfilePage />
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
