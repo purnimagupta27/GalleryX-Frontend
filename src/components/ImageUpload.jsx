@@ -131,7 +131,6 @@ const ImageUpload = ({ isOpen = true, onClose, onPostCreated }) => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 items-start">
-            {/* Image Upload Area */}
             <div className="w-full">
               <label
                 htmlFor="modal-image-upload"

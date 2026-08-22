@@ -1,11 +1,21 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { deleteMyPostById, getPostById } from "../services/post.service";
-import { Download, Bookmark, ArrowLeft, User, MoreVertical, Pencil, Trash2, Lock } from "lucide-react";
+import {
+  Download,
+  Bookmark,
+  ArrowLeft,
+  User,
+  MoreVertical,
+  Pencil,
+  Trash2,
+  Lock,
+} from "lucide-react";
 import { Likes } from "../components/Likes";
 import { Comments } from "../components/Comments";
 import toast from "react-hot-toast";
 import { getMe } from "../services/auth.service";
+import { EditPost } from "../components/EditPost";
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -15,6 +25,7 @@ const PostPage = () => {
   const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [showEditPost, setShowEditPost] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => {
@@ -61,14 +72,13 @@ const PostPage = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteMyPostById(postId)
-      toast.success("Post deleted")
-      navigate(-1)
+      await deleteMyPostById(postId);
+      toast.success("Post deleted");
+      navigate(-1);
+    } catch {
+      toast.error("Something went wrong");
     }
-    catch {
-      toast.error("Something went wrong")
-    }
-  }
+  };
 
   const handleDownload = async () => {
     if (!post?.url) return;
@@ -89,8 +99,12 @@ const PostPage = () => {
   };
 
   const isOwner =
-    (post?.user?.userId && currentUser?.user?.id && post.user.userId === currentUser.user.id) ||
-    (post?.userId && currentUser?.user?.id && post.userId === currentUser.user.id);
+    (post?.user?.userId &&
+      currentUser?.user?.id &&
+      post.user.userId === currentUser.user.id) ||
+    (post?.userId &&
+      currentUser?.user?.id &&
+      post.userId === currentUser.user.id);
 
   return (
     <div className="relative h-screen w-screen bg-zinc-950 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
@@ -157,6 +171,7 @@ const PostPage = () => {
                       type="button"
                       onClick={() => {
                         setShowMenu(false);
+                        setShowEditPost(true);
                       }}
                       className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs sm:text-sm text-zinc-200 hover:text-white hover:bg-white/10 transition-colors text-left cursor-pointer"
                     >
@@ -167,7 +182,7 @@ const PostPage = () => {
                       type="button"
                       onClick={() => {
                         setShowMenu(false);
-                        handleDelete()
+                        handleDelete();
                       }}
                       className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-xs sm:text-sm text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors text-left cursor-pointer"
                     >
@@ -175,6 +190,16 @@ const PostPage = () => {
                       <span>Delete post</span>
                     </button>
                   </div>
+                )}
+                {showEditPost && (
+                  <EditPost
+                    postId={postId}
+                    post={post}
+                    onClose={() => setShowEditPost(false)}
+                    onPostUpdated={(updated) =>
+                      setPost((prev) => ({ ...prev, ...updated }))
+                    }
+                  />
                 )}
               </div>
             )}

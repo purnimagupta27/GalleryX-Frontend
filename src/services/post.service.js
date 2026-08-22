@@ -19,10 +19,16 @@ const deleteMyPostById = async(postId) => {
   return response.data
 }
 
+const editMyPostById = async(postId, data) => {
+  const response = await API.patch(`/api/posts/my-post/${postId}`, data)
+  return response.data
+}
+
 
 
 export {
   createPost,
   getPostById,
-  deleteMyPostById
+  deleteMyPostById,
+  editMyPostById
 };
