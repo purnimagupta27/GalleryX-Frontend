@@ -6,6 +6,7 @@ import { Lock } from "lucide-react";
 import { getMe } from "../services/auth.service";
 import ProfilePage from "./ProfilePage";
 import toast from "react-hot-toast";
+import { followUser, getFollowStatus, unfollowUser } from "../services/follows.service";
 
 const getColumnCount = () => {
   if (typeof window === "undefined") return 2;
@@ -24,6 +25,24 @@ const UserProfilePage = () => {
   const [columnCount, setColumnCount] = useState(getColumnCount());
   const [currentUser, setCurrentUser] = useState(null)
   const [currentUserLoading, setCurrentUserLoading] = useState(true)
+  const [isFollowing, setIsFollowing] = useState()
+
+
+  useEffect(() => {
+    const checkFollowStatus = async () => {
+      try {
+        const response = await getFollowStatus(userId)
+        console.log(response.data)
+        setIsFollowing(response.data.isFollowing)
+      }
+      catch {
+        toast.error("Something went wrong")
+      }
+    }
+    if (userId) {
+      checkFollowStatus()
+    }
+  }, [userId])
 
   useEffect(() => {
     const handleResize = () => setColumnCount(getColumnCount());
@@ -32,18 +51,18 @@ const UserProfilePage = () => {
   }, []);
 
   useEffect(() => {
-    try{
-        const fetchUser = async() => {
+    try {
+      const fetchUser = async () => {
         const response = await getMe()
         setCurrentUser(response.data)
+      }
+      fetchUser()
     }
-    fetchUser()
+    catch {
+      toast.error("Something went wrong")
     }
-    catch{
-        toast.error("Something went wrong")
-    }
-    finally{
-        setCurrentUserLoading(false)
+    finally {
+      setCurrentUserLoading(false)
     }
   }, [])
 
@@ -74,6 +93,17 @@ const UserProfilePage = () => {
     return cols;
   }, [posts, columnCount]);
 
+  const handleFollow = async () => {
+    if (!isFollowing) {
+      await followUser(userId)
+      setIsFollowing(true)
+    }
+    else {
+      await unfollowUser(userId)
+      setIsFollowing(false)
+    }
+  }
+
   if (!userProfile) {
     return (
       <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
@@ -84,17 +114,17 @@ const UserProfilePage = () => {
     );
   }
 
-  if(currentUserLoading || !userProfile){
-    return(
-        <div>
-            loading...
-        </div>
+  if (currentUserLoading || !userProfile) {
+    return (
+      <div>
+        loading...
+      </div>
     )
   }
 
   const isOwner = (userProfile?.user?.id === currentUser?.user?.id)
 
-  if(isOwner) return <ProfilePage />
+  if (isOwner) return <ProfilePage />
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
@@ -128,10 +158,14 @@ const UserProfilePage = () => {
 
       <div className="flex items-center justify-center mt-2 mb-2">
         <button
-          className="px-6 py-2 rounded-full bg-white text-zinc-950 text-xs sm:text-sm font-semibold hover:bg-white/90 active:scale-95 transition-all cursor-pointer shadow-md"
+          onClick={handleFollow}
+          className={`px-6 py-2 rounded-full text-xs sm:text-sm font-semibold active:scale-95 transition-all cursor-pointer shadow-md ${isFollowing
+              ? "bg-zinc-900/80 border border-white/15 text-zinc-300 hover:text-white hover:border-white/30 backdrop-blur-md"
+              : "bg-white text-zinc-950 hover:bg-white/90"
+            }`}
           style={{ fontFamily: "'Outfit', sans-serif" }}
         >
-          Follow
+          {isFollowing ? "Following" : "Follow"}
         </button>
       </div>
 

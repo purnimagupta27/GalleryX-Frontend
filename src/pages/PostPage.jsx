@@ -261,15 +261,6 @@ const PostPage = () => {
               >
                 {post?.user?.username || "Unknown"}
               </Link>
-
-              {post?.user?.userId !== currentUser?.user?.id && (
-                <button
-                  className="ml-1 px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full bg-white text-black text-xs font-bold hover:bg-white/90 active:scale-95 transition-all cursor-pointer shadow-md shrink-0"
-                  style={{ fontFamily: "'Outfit', sans-serif" }}
-                >
-                  Follow
-                </button>
-              )}
             </div>
 
             {post?.caption && (
