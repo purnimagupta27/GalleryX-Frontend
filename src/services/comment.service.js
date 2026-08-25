@@ -10,7 +10,13 @@ const getComments = async(postId) => {
     return response.data
 }
 
+const deleteComment = async(commentId) => {
+    const response = await API.delete(`/api/comments/${commentId}`)
+    return response.data
+}
+
 export{
     createComment,
-    getComments
+    getComments,
+    deleteComment
 }
