@@ -47,7 +47,6 @@ export const EditPost = ({ postId, post, onClose, onPostUpdated }) => {
         className="w-full max-w-md bg-zinc-900/95 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-[0_25px_60px_rgba(0,0,0,0.85)] relative animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
           <h2
             className="text-base sm:text-lg font-bold tracking-wide text-white uppercase"
@@ -67,7 +66,6 @@ export const EditPost = ({ postId, post, onClose, onPostUpdated }) => {
           )}
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label
