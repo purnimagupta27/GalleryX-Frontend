@@ -85,6 +85,7 @@ export const Comments = ({ post, currentUser: propCurrentUser }) => {
           const response = await getMe();
           setCurrentUser(response.data);
         } catch {
+          toast.error("Something went wrong")
         }
       };
       fetchUser();
