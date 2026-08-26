@@ -3,6 +3,7 @@ import { feed } from "../services/feed.service";
 import { HomeNavbar } from "../components/HomeNavbar";
 import { useNavigate } from "react-router-dom";
 import Shimmer from "../components/Shimmer";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const getColumnCount = () => {
   if (typeof window === "undefined") return 2;
@@ -22,6 +23,8 @@ const HomePage = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [columnCount, setColumnCount] = useState(getColumnCount());
+
+  const onlinestatus = useOnlineStatus()
 
   useEffect(() => {
     const handleResize = () => setColumnCount(getColumnCount());
@@ -84,7 +87,16 @@ const HomePage = () => {
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
       <HomeNavbar />
 
-      <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
+      {!onlinestatus ? (
+        <div className="flex flex-col items-center justify-center flex-1 py-24 px-4 text-center">
+          <h1
+            className="text-white/70 text-base sm:text-lg font-medium tracking-wide"
+            style={{ fontFamily: "'Outfit', sans-serif" }}
+          >
+            Looks like you're offline! Please check your internet connection.
+          </h1>
+        </div>
+      ) : (<div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
         {images.length === 0 && loading ? (
           <Shimmer />
         ) : images.length === 0 ? (
@@ -154,7 +166,7 @@ const HomePage = () => {
             )}
           </>
         )}
-      </div>
+      </div>)}
     </div>
   );
 };
