@@ -3,7 +3,7 @@ import { feed } from "../services/feed.service";
 import { HomeNavbar } from "../components/HomeNavbar";
 import { useNavigate } from "react-router-dom";
 import Shimmer from "../components/Shimmer";
-import useOnlineStatus from "../utils/useOnlineStatus";
+import toast from "react-hot-toast";
 
 const getColumnCount = () => {
   if (typeof window === "undefined") return 2;
@@ -24,7 +24,6 @@ const HomePage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [columnCount, setColumnCount] = useState(getColumnCount());
 
-  const onlinestatus = useOnlineStatus()
 
   useEffect(() => {
     const handleResize = () => setColumnCount(getColumnCount());
@@ -49,6 +48,7 @@ const HomePage = () => {
   );
 
   useEffect(() => {
+
     const fetchImageData = async () => {
       setLoading(true);
 
@@ -64,6 +64,9 @@ const HomePage = () => {
       } catch (err) {
         if (err.response?.status === 401) {
           navigate("/");
+        }
+        else{
+          toast.error("Something went wrong")
         }
       } finally {
         setLoading(false);
@@ -86,17 +89,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
       <HomeNavbar />
-
-      {!onlinestatus ? (
-        <div className="flex flex-col items-center justify-center flex-1 py-24 px-4 text-center">
-          <h1
-            className="text-white/70 text-base sm:text-lg font-medium tracking-wide"
-            style={{ fontFamily: "'Outfit', sans-serif" }}
-          >
-            Looks like you're offline! Please check your internet connection.
-          </h1>
-        </div>
-      ) : (<div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
+<div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
         {images.length === 0 && loading ? (
           <Shimmer />
         ) : images.length === 0 ? (
@@ -166,7 +159,7 @@ const HomePage = () => {
             )}
           </>
         )}
-      </div>)}
+      </div>
     </div>
   );
 };
