@@ -1,11 +1,12 @@
-import { MessageCircle, X, Loader2 } from "lucide-react";
-import { createComment, getComments } from "../services/comment.service";
-import { useState, useRef } from "react";
+import { MessageCircle, X, Loader2, MoreVertical, Trash2 } from "lucide-react";
+import { createComment, getComments, deleteComment } from "../services/comment.service";
+import { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { getMe } from "../services/auth.service";
 
-export const Comments = ({ post }) => {
-  const navigate = useNavigate()
+export const Comments = ({ post, currentUser: propCurrentUser }) => {
+  const navigate = useNavigate();
 
   const [comments, setComments] = useState([]);
   const [commentMessage, setCommentMessage] = useState("");
@@ -15,6 +16,9 @@ export const Comments = ({ post }) => {
   const [commentCount, setCommentCount] = useState(
     Number(post?.comments?.commentsCount ?? 0),
   );
+  const [currentUser, setCurrentUser] = useState(propCurrentUser || null);
+  const [activeMenuCommentId, setActiveMenuCommentId] = useState(null);
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
 
   const commentsEndRef = useRef(null);
 
@@ -37,6 +41,7 @@ export const Comments = ({ post }) => {
 
   const handleCloseComments = () => {
     setShowComments(false);
+    setActiveMenuCommentId(null);
   };
 
   const handleComment = async (e) => {
@@ -57,6 +62,51 @@ export const Comments = ({ post }) => {
       setSubmitting(false);
     }
   };
+
+  const handleDeleteComment = async (commentId) => {
+    setDeletingCommentId(commentId);
+    try {
+      await deleteComment(commentId);
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+      setCommentCount((prev) => Math.max(0, prev - 1));
+      toast.success("Comment deleted");
+    } catch {
+      toast.error("Failed to delete comment");
+    } finally {
+      setDeletingCommentId(null);
+      setActiveMenuCommentId(null);
+    }
+  };
+
+  useEffect(() => {
+    if (!propCurrentUser) {
+      const fetchUser = async () => {
+        try {
+          const response = await getMe();
+          setCurrentUser(response.data);
+        } catch {
+        }
+      };
+      fetchUser();
+    } else {
+      setCurrentUser(propCurrentUser);
+    }
+  }, [propCurrentUser]);
+
+  useEffect(() => {
+    const handleDocumentClick = () => {
+      setActiveMenuCommentId(null);
+    };
+
+    if (activeMenuCommentId) {
+      document.addEventListener("click", handleDocumentClick);
+    }
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, [activeMenuCommentId]);
+
+  const currentUserId = currentUser?.user?.id || currentUser?.id;
 
   return (
     <>
@@ -141,30 +191,83 @@ export const Comments = ({ post }) => {
                   const initial = (comment.username || "U")
                     .charAt(0)
                     .toUpperCase();
+                  const isCommentOwner = Boolean(
+                    currentUserId &&
+                      comment?.userId &&
+                      currentUserId === comment.userId
+                  );
+
                   return (
                     <div
                       key={comment.id || index}
-                      className="flex items-start gap-2.5 text-xs sm:text-sm leading-relaxed"
+                      className="group/comment flex items-start justify-between gap-2.5 text-xs sm:text-sm leading-relaxed rounded-xl p-2 hover:bg-white/5 transition-colors"
                       style={{ fontFamily: "'Outfit', sans-serif" }}
                     >
-                      <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center shrink-0 text-white font-bold text-[10px] sm:text-xs shadow-sm ring-1 ring-white/20 select-none cursor-pointer">
-                        {initial}
+                      <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                        <div
+                          className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center shrink-0 text-white font-bold text-[10px] sm:text-xs shadow-sm ring-1 ring-white/20 select-none cursor-pointer"
+                          onClick={() =>
+                            comment.userId && navigate(`/profile/${comment.userId}`)
+                          }
+                        >
+                          {initial}
+                        </div>
+
+                        <div className="flex-1 min-w-0 pt-0.5">
+                          <span
+                            className="font-semibold text-white mr-2 cursor-pointer hover:underline"
+                            onClick={() =>
+                              comment.userId && navigate(`/profile/${comment.userId}`)
+                            }
+                          >
+                            {comment.username || "User"}
+                          </span>
+                          <span className="text-zinc-300 break-words font-normal">
+                            {comment.message}
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="flex-1 min-w-0 pt-0.5">
-                        <span
-                          className="font-semibold text-white mr-2 cursor-pointer"
-                          onClick={() => navigate(`/profile/${comment.userId}`)}
-                        >
-                          {comment.username || "User"}
-                        </span>
-                        <span className="text-zinc-300 break-words font-normal">
-                          {comment.message}
-                        </span>
-                      </div>
+                      {isCommentOwner && (
+                        <div className="relative shrink-0 pt-0.5">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveMenuCommentId((prev) =>
+                                prev === comment.id ? null : comment.id
+                              );
+                            }}
+                            className="p-1 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+                            title="More options"
+                          >
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
+
+                          {activeMenuCommentId === comment.id && (
+                            <div
+                              className="absolute right-0 top-full mt-1 w-32 bg-zinc-900/95 backdrop-blur-xl border border-white/15 rounded-xl shadow-2xl overflow-hidden py-1 z-50 animate-in fade-in zoom-in-95 duration-150"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteComment(comment.id)}
+                                disabled={deletingCommentId === comment.id}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors text-left cursor-pointer disabled:opacity-50"
+                              >
+                                {deletingCommentId === comment.id ? (
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                ) : (
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                )}
+                                <span>Delete</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
-                  
                 })
               )}
               <div ref={commentsEndRef} />

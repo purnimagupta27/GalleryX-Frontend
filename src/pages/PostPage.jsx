@@ -65,7 +65,6 @@ const PostPage = () => {
     const fetchUser = async () => {
       const response = await getMe();
       setCurrentUser(response.data);
-      console.log(response.data);
     };
     fetchUser();
   }, []);
@@ -208,7 +207,7 @@ const PostPage = () => {
           <div className="absolute right-3 sm:right-4 bottom-28 sm:bottom-32 z-20 flex flex-col items-center gap-5 sm:gap-6">
             <Likes post={post} />
 
-            <Comments post={post} />
+            <Comments post={post} currentUser={currentUser} />
 
             <button className="flex flex-col items-center gap-1 text-white cursor-pointer group">
               <div className="p-2.5 rounded-full bg-black/35 backdrop-blur-md border border-white/10 group-hover:bg-amber-500/20 group-hover:border-amber-500/40 transition-all">
