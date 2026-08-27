@@ -108,12 +108,11 @@ export const HomeNavbar = ({ onPostCreated }) => {
                 </button>
                 <button
                   onClick={() => {
-                    setActiveDropdown(null);
-                    setIsBookmarkOpen(true);
+                    navigate('/my-bookmarks')
                   }}
                   className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer"
                 >
-                  Bookmarks
+                  My Bookmarks
                 </button>
                 <button
                   onClick={() => {

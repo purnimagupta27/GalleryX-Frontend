@@ -6,4 +6,12 @@ const createCollection = async (data) => {
   return response.data;
 };
 
-export { createCollection };
+const getCollections = async () => {
+  const response = await API.get(`/api/boards/my-boards`)
+  return response.data
+}
+
+export { 
+  createCollection ,
+  getCollections
+};

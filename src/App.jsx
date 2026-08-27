@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import PostPage from "./pages/PostPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
+import { BookmarkPage } from "./pages/BookmarkPage";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/post/:postId" element={<PostPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/:userId" element={<UserProfilePage />} />
+        <Route path="my-bookmarks" element={<BookmarkPage />} />
       </Routes>
     </>
   );
