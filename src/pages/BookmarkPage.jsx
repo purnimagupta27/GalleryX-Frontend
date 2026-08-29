@@ -13,7 +13,6 @@ export const BookmarkPage = () => {
       setLoading(true);
       try {
         const response = await getCollections();
-        console.log(response.data);
         setBookmarks(response.data || []);
       } catch {
         toast.error("Something went wrong");
@@ -88,7 +87,7 @@ export const BookmarkPage = () => {
                     className="text-[11px] sm:text-xs text-zinc-400 font-medium mt-0.5"
                     style={{ fontFamily: "'Outfit', sans-serif" }}
                   >
-                    Saved pins
+                    Saved posts
                   </p>
                 </div>
               </div>
