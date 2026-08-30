@@ -7,7 +7,7 @@ import { Bookmark as BookmarkIcon } from "lucide-react";
 export const BookmarkPage = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
+  const [showDelete, setShowDelete] = useState(null);
   const [refreshBookmarks, setRefreshBookmarks] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
 
@@ -26,11 +26,23 @@ export const BookmarkPage = () => {
     fetchSaves();
   }, [refreshBookmarks]);
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if(!e.target.closest(".menu-container")){
+        setShowDelete(null)
+      }
+    }
+    document.addEventListener("click", handleClickOutside)
+    return () => {
+      document.removeEventListener("click", handleClickOutside)
+    }
+  }, [])
+
   const handleDeleteBookmark = async (bookmarkId) => {
     setDeletingId(bookmarkId);
     try {
       await deletecollection(bookmarkId);
-      setShowDelete(false);
+      setShowDelete(null);
       setRefreshBookmarks((prev) => !prev);
     } catch {
       toast.error("Something went wrong");
@@ -93,7 +105,7 @@ export const BookmarkPage = () => {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setShowDelete(!showDelete);
+                      setShowDelete(showDelete === bookmark.id ? null : bookmark.id);
                     }}
                     className="absolute top-2 right-2 p-1.5 rounded-full text-zinc-400 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer z-10"
                   >
@@ -104,8 +116,8 @@ export const BookmarkPage = () => {
                     </svg>
                   </button>
 
-                  {showDelete && (
-                    <div className="absolute top-10 right-2 z-30 min-w-[150px] rounded-xl bg-zinc-900/95 border border-white/15 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] p-1.5">
+                  {showDelete === bookmark.id && (
+                    <div className="menu-container absolute top-10 right-2 z-30 min-w-[150px] rounded-xl bg-zinc-900/95 border border-white/15 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] p-1.5">
                       <button
                         className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/15 hover:text-red-300 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ fontFamily: "'Outfit', sans-serif" }}
@@ -120,7 +132,8 @@ export const BookmarkPage = () => {
                             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeDasharray="50" strokeDashoffset="15" />
                           </svg>
                         ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <svg
+                          xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
                           </svg>
                         )}
