@@ -11,7 +11,13 @@ const getCollections = async () => {
   return response.data
 }
 
+const deletecollection  = async (boardId) => {
+  const response = await API.delete(`/api/boards/${boardId}`)
+  return response.data
+}
+
 export { 
   createCollection ,
-  getCollections
+  getCollections,
+  deletecollection
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCollections } from "../services/collection.service";
+import { deletecollection, getCollections } from "../services/collection.service";
 import toast from "react-hot-toast";
 import HomeNavbar from "../components/HomeNavbar";
 import { Bookmark as BookmarkIcon } from "lucide-react";
@@ -7,6 +7,9 @@ import { Bookmark as BookmarkIcon } from "lucide-react";
 export const BookmarkPage = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [refreshBookmarks, setRefreshBookmarks] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     const fetchSaves = async () => {
@@ -21,7 +24,20 @@ export const BookmarkPage = () => {
       }
     };
     fetchSaves();
-  }, []);
+  }, [refreshBookmarks]);
+
+  const handleDeleteBookmark = async (bookmarkId) => {
+    setDeletingId(bookmarkId);
+    try {
+      await deletecollection(bookmarkId);
+      setShowDelete(false);
+      setRefreshBookmarks((prev) => !prev);
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -74,9 +90,44 @@ export const BookmarkPage = () => {
                   <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-tr from-rose-500/20 via-white/10 to-purple-500/20 border border-white/10 shadow-lg group-hover:scale-110 group-hover:border-white/30 transition-all duration-300">
                     <BookmarkIcon className="w-6 h-6 sm:w-7 sm:h-7 text-white/90 group-hover:text-white" />
                   </div>
-                  <span className="absolute top-2.5 right-2.5 text-[10px] sm:text-[11px] font-medium tracking-wider uppercase px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-zinc-400">
-                    Collection
-                  </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDelete(!showDelete);
+                    }}
+                    className="absolute top-2 right-2 p-1.5 rounded-full text-zinc-400 hover:bg-white/10 hover:text-white transition-all duration-200 cursor-pointer z-10"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="5" r="1" />
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="12" cy="19" r="1" />
+                    </svg>
+                  </button>
+
+                  {showDelete && (
+                    <div className="absolute top-10 right-2 z-30 min-w-[150px] rounded-xl bg-zinc-900/95 border border-white/15 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] p-1.5">
+                      <button
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/15 hover:text-red-300 active:scale-95 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ fontFamily: "'Outfit', sans-serif" }}
+                        disabled={deletingId === bookmark.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteBookmark(bookmark.id);
+                        }}
+                      >
+                        {deletingId === bookmark.id ? (
+                          <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeDasharray="50" strokeDashoffset="15" />
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                          </svg>
+                        )}
+                        {deletingId === bookmark.id ? "Deleting..." : "Delete"}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-3 pb-1 px-1">
