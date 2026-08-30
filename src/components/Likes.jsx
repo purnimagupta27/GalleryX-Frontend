@@ -1,41 +1,69 @@
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { likePost, unlikePost } from "../services/likes.service";
 import toast from "react-hot-toast";
 
 export const Likes = ({ post }) => {
-  const [isLiked, setIsLiked] = useState(post?.likes?.isLiked);
-  const [likeId, setLikeId] = useState(post?.likeId);
-  const [likesCount, setLikesCount] = useState(post?.likes?.likesCount);
+  const [isLiked, setIsLiked] = useState(Boolean(post?.likes?.isLiked));
+  const [likesCount, setLikesCount] = useState(post?.likes?.likesCount || 0);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (post) {
+      setIsLiked(Boolean(post?.likes?.isLiked));
+      setLikesCount(post?.likes?.likesCount || 0);
+    }
+  }, [post]);
 
   const handleLike = async () => {
-    try {
-      if (isLiked) {
-        await unlikePost(post.id);
-        setIsLiked(false);
-        setLikeId(null);
-        setLikesCount((prev) => prev - 1);
-      } else {
-        const response = await likePost(post.id);
-        setIsLiked(true);
-        setLikeId(response.data.likeId);
-        setLikesCount((prev) => prev + 1);
-      }
+    if (!post?.id || loading) return;
+
+    const previousLiked = isLiked;
+    const previousCount = likesCount;
+
+    if (previousLiked) {
+      setIsLiked(false);
+      setLikesCount((prev) => Math.max(0, prev - 1));
+    } else {
+      setIsLiked(true);
+      setLikesCount((prev) => prev + 1);
     }
-    catch (err) {
-      if (err) {
-        toast.error("Something went wrong")
+
+    setLoading(true);
+    try {
+      if (previousLiked) {
+        await unlikePost(post.id);
+      } else {
+        await likePost(post.id);
       }
+    } catch (err) {
+      setIsLiked(previousLiked);
+      setLikesCount(previousCount);
+      toast.error(err?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
-      <button className="flex flex-col items-center gap-1 text-white cursor-pointer group">
-        <div className="p-2.5 rounded-full bg-black/35 backdrop-blur-md border border-white/10 group-hover:bg-red-500/20 group-hover:border-red-500/40 transition-all">
+      <button
+        type="button"
+        onClick={handleLike}
+        disabled={loading}
+        className="flex flex-col items-center gap-1 text-white cursor-pointer group"
+      >
+        <div
+          className={`p-2.5 rounded-full backdrop-blur-md border transition-all duration-200 ${
+            isLiked
+              ? "bg-red-500/30 border-red-500/50 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+              : "bg-black/35 border-white/10 text-white group-hover:bg-red-500/20 group-hover:border-red-500/40"
+          }`}
+        >
           <Heart
-            className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow group-hover:scale-110 group-hover:text-red-400 transition-transform duration-200"
-            onClick={handleLike}
+            className={`w-6 h-6 sm:w-7 sm:h-7 drop-shadow transition-transform duration-200 group-hover:scale-110 ${
+              isLiked ? "fill-red-500 text-red-500" : "text-white group-hover:text-red-400"
+            }`}
           />
         </div>
         <span
