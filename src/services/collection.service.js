@@ -16,8 +16,14 @@ const deletecollection  = async (boardId) => {
   return response.data
 }
 
+const getCollectionStatus = async (postId) => {
+  const response = await API.get(`/api/boards/status/${postId}`)
+  return response.data
+}
+
 export { 
   createCollection ,
   getCollections,
-  deletecollection
+  deletecollection,
+  getCollectionStatus
 };

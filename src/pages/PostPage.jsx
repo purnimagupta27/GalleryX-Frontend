@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { deleteMyPostById, getPostById } from "../services/post.service";
+import { getCollectionStatus } from '../services/collection.service.js'
 import {
   Download,
   Bookmark,
@@ -26,7 +27,23 @@ const PostPage = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const [showEditPost, setShowEditPost] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    const fetchBookmarkStatus = async () => {
+      try {
+        const response = await getCollectionStatus(postId)
+        setIsBookmarked(response.data.isBookmarked)
+      }
+      catch {
+        toast.error("Something went wrong")
+      }
+    }
+    if (postId) {
+      fetchBookmarkStatus()
+    }
+  }, [postId])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -210,14 +227,25 @@ const PostPage = () => {
             <Comments post={post} currentUser={currentUser} />
 
             <button className="flex flex-col items-center gap-1 text-white cursor-pointer group">
-              <div className="p-2.5 rounded-full bg-black/35 backdrop-blur-md border border-white/10 group-hover:bg-amber-500/20 group-hover:border-amber-500/40 transition-all">
-                <Bookmark className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow group-hover:scale-110 group-hover:text-amber-400 transition-transform duration-200" />
+              <div
+                className={`p-2.5 rounded-full backdrop-blur-md border transition-all ${isBookmarked
+                    ? "bg-amber-500/25 border-amber-400/50 shadow-[0_0_15px_rgba(245,158,11,0.25)]"
+                    : "bg-black/35 border-white/10 group-hover:bg-amber-500/20 group-hover:border-amber-500/40"
+                  }`}
+              >
+                <Bookmark
+                  className={`w-6 h-6 sm:w-7 sm:h-7 drop-shadow transition-transform duration-200 ${isBookmarked
+                      ? "fill-amber-400 text-amber-400 scale-105"
+                      : "text-white group-hover:scale-110 group-hover:text-amber-400"
+                    }`}
+                />
               </div>
               <span
-                className="text-[11px] font-medium text-white/80 drop-shadow-md"
+                className={`text-[11px] font-medium drop-shadow-md transition-colors ${isBookmarked ? "text-amber-400 font-semibold" : "text-white/80"
+                  }`}
                 style={{ fontFamily: "'Outfit', sans-serif" }}
               >
-                Save
+                {isBookmarked ? "Saved" : "Save"}
               </span>
             </button>
 
