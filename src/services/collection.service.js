@@ -11,7 +11,7 @@ const getCollections = async () => {
   return response.data
 }
 
-const deletecollection  = async (boardId) => {
+const deletecollection = async (boardId) => {
   const response = await API.delete(`/api/boards/${boardId}`)
   return response.data
 }
@@ -21,9 +21,21 @@ const getCollectionStatus = async (postId) => {
   return response.data
 }
 
-export { 
-  createCollection ,
+const saveToCollections = async (boardId, postId) => {
+  const response = await API.post(`/api/boards/${boardId}/add-post/${postId}`)
+  return response.data
+}
+
+const getPostsFromCollection = async (bookmarkId) => {
+  const response = await API.get(`/api/boards/${bookmarkId}/posts`)
+  return response.data
+}
+
+export {
+  createCollection,
   getCollections,
   deletecollection,
-  getCollectionStatus
+  getCollectionStatus,
+  saveToCollections,
+  getPostsFromCollection
 };

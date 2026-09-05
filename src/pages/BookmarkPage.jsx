@@ -3,6 +3,7 @@ import { deletecollection, getCollections } from "../services/collection.service
 import toast from "react-hot-toast";
 import HomeNavbar from "../components/HomeNavbar";
 import { Bookmark as BookmarkIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const BookmarkPage = () => {
   const [bookmarks, setBookmarks] = useState([]);
@@ -10,6 +11,9 @@ export const BookmarkPage = () => {
   const [showDelete, setShowDelete] = useState(null);
   const [refreshBookmarks, setRefreshBookmarks] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  // const [bookmarkPosts, setBookmarkPosts] = useState([])
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchSaves = async () => {
@@ -17,6 +21,7 @@ export const BookmarkPage = () => {
       try {
         const response = await getCollections();
         setBookmarks(response.data || []);
+        // console.log(response.data)
       } catch {
         toast.error("Something went wrong");
       } finally {
@@ -50,6 +55,16 @@ export const BookmarkPage = () => {
       setDeletingId(null);
     }
   };
+
+  // const handleBookmarkPosts = async (bookmarkId) => {
+  //   try{
+  //     const response = await getPostsFromCollection(bookmarkId)
+  //     setBookmarkPosts(response.data)
+  //   }
+  //   catch{
+  //     toast.error("Something went wrong")
+  //   }
+  // }
 
   if (loading) {
     return (
@@ -96,6 +111,7 @@ export const BookmarkPage = () => {
             return (
               <div
                 key={bookmark.id}
+                onClick={() => navigate(`/bookmarks/${bookmark.id}`)}
                 className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/60 p-4 backdrop-blur-md transition-all duration-300 ease-out hover:scale-[1.02] hover:border-white/40 hover:bg-zinc-900/90 hover:shadow-[0_8px_30px_rgba(255,255,255,0.06)] flex flex-col justify-between min-h-[240px] sm:min-h-[270px]"
               >
                 <div className="w-full flex-1 rounded-xl bg-gradient-to-b from-white/[0.04] to-white/[0.01] border border-white/5 flex flex-col items-center justify-center p-5 relative group-hover:border-white/15 transition-all duration-300">

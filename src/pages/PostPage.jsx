@@ -1,10 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { deleteMyPostById, getPostById } from "../services/post.service";
-import { getCollectionStatus } from '../services/collection.service.js'
+import {
+  getCollections,
+  getCollectionStatus,
+  saveToCollections,
+} from "../services/collection.service.js";
 import {
   Download,
-  Bookmark,
+  Bookmark as BookmarkIcon,
   ArrowLeft,
   User,
   MoreVertical,
@@ -28,62 +32,60 @@ const PostPage = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showEditPost, setShowEditPost] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [collections, setCollections] = useState([]);
+  const [showCollection, setShowCollection] = useState(false);
+
   const menuRef = useRef(null);
+  const popupRef = useRef(null);
 
   useEffect(() => {
-    const fetchBookmarkStatus = async () => {
-      try {
-        const response = await getCollectionStatus(postId)
-        setIsBookmarked(response.data.isBookmarked)
-      }
-      catch {
-        toast.error("Something went wrong")
-      }
-    }
-    if (postId) {
-      fetchBookmarkStatus()
-    }
-  }, [postId])
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setShowMenu(false);
-      }
-    };
-    if (showMenu) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showMenu]);
-
-  useEffect(() => {
-    const fetchPost = async () => {
+    const fetchPostData = async () => {
       try {
         setLoading(true);
-        const [postResponse, userResponse] = await Promise.all([
-          getPostById(postId),
-          getMe(),
-        ]);
+        const [postResponse, userResponse, bookmarkResponse, collectionsResponse] =
+          await Promise.all([
+            getPostById(postId),
+            getMe().catch(() => null),
+            getCollectionStatus(postId).catch(() => null),
+            getCollections().catch(() => null),
+          ]);
+
         setPost(postResponse.data);
-        setCurrentUser(userResponse.data);
+        if (userResponse?.data) {
+          setCurrentUser(userResponse.data);
+        }
+        if (bookmarkResponse?.data) {
+          setIsBookmarked(Boolean(bookmarkResponse.data.isBookmarked));
+        }
+        if (collectionsResponse?.data) {
+          setCollections(collectionsResponse.data);
+        }
       } catch {
         toast.error("Something went wrong");
       } finally {
         setLoading(false);
       }
     };
-    fetchPost();
+
+    if (postId) {
+      fetchPostData();
+    }
   }, [postId]);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const response = await getMe();
-      setCurrentUser(response.data);
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setShowCollection(false);
+      }
     };
-    fetchUser();
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleDelete = async () => {
@@ -111,6 +113,33 @@ const PostPage = () => {
       window.URL.revokeObjectURL(blobUrl);
     } catch {
       window.open(post.url, "_blank");
+    }
+  };
+
+  const handleSaveClick = () => {
+    setShowCollection((prev) => !prev);
+    if (!collections.length) {
+      getCollections().then((res) => {
+        if (res?.data) setCollections(res.data);
+      });
+    }
+  };
+
+  const handleSave = async (boardId) => {
+    const previousBookmarkState = isBookmarked;
+
+    setIsBookmarked(true);
+    setShowCollection(false);
+    toast.success("Saved to bookmark");
+
+    try {
+      await saveToCollections(boardId, postId);
+    } catch (err) {
+      if (err.response?.status === 409) {
+        return;
+      }
+      setIsBookmarked(previousBookmarkState);
+      toast.error(err.response?.data?.message || "Failed to save post");
     }
   };
 
@@ -226,28 +255,60 @@ const PostPage = () => {
 
             <Comments post={post} currentUser={currentUser} />
 
-            <button className="flex flex-col items-center gap-1 text-white cursor-pointer group">
-              <div
-                className={`p-2.5 rounded-full backdrop-blur-md border transition-all ${isBookmarked
-                    ? "bg-amber-500/25 border-amber-400/50 shadow-[0_0_15px_rgba(245,158,11,0.25)]"
+            <div className="relative">
+              <button
+                type="button"
+                onClick={handleSaveClick}
+                className="flex flex-col items-center gap-1 text-white cursor-pointer group"
+              >
+                <div
+                  className={`p-2.5 rounded-full backdrop-blur-md border transition-all ${isBookmarked
+                    ? "bg-amber-500/25 border-amber-400/50"
                     : "bg-black/35 border-white/10 group-hover:bg-amber-500/20 group-hover:border-amber-500/40"
-                  }`}
-              >
-                <Bookmark
-                  className={`w-6 h-6 sm:w-7 sm:h-7 drop-shadow transition-transform duration-200 ${isBookmarked
-                      ? "fill-amber-400 text-amber-400 scale-105"
-                      : "text-white group-hover:scale-110 group-hover:text-amber-400"
                     }`}
-                />
-              </div>
-              <span
-                className={`text-[11px] font-medium drop-shadow-md transition-colors ${isBookmarked ? "text-amber-400 font-semibold" : "text-white/80"
-                  }`}
-                style={{ fontFamily: "'Outfit', sans-serif" }}
-              >
-                {isBookmarked ? "Saved" : "Save"}
-              </span>
-            </button>
+                >
+                  <BookmarkIcon
+                    className={`w-6 h-6 sm:w-7 sm:h-7 drop-shadow transition-transform duration-200 ${isBookmarked
+                      ? "fill-amber-400 text-amber-400"
+                      : "text-white group-hover:text-amber-400"
+                      }`}
+                  />
+                </div>
+                <span
+                  className={`text-[11px] font-medium drop-shadow-md transition-colors ${isBookmarked
+                    ? "text-amber-400 font-semibold"
+                    : "text-white/80"
+                    }`}
+                  style={{ fontFamily: "'Outfit', sans-serif" }}
+                >
+                  {isBookmarked ? "Saved" : "Save"}
+                </span>
+              </button>
+
+              {showCollection && (
+                <div
+                  ref={popupRef}
+                  className="absolute right-full mr-2 bottom-0 flex flex-col gap-1 p-1.5 bg-zinc-950/90 backdrop-blur-md border border-white/15 rounded-xl shadow-xl z-50 min-w-[150px]"
+                >
+                  {collections.length === 0 ? (
+                    <div className="px-3.5 py-2 text-xs sm:text-sm text-white/50 whitespace-nowrap">
+                      Create a bookmark first
+                    </div>
+                  ) : (
+                    collections.map((collection) => (
+                      <button
+                        key={collection.id}
+                        type="button"
+                        onClick={() => handleSave(collection.id)}
+                        className="w-full text-left px-3.5 py-2 text-xs sm:text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer"
+                      >
+                        {collection.name}
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
 
             <button
               onClick={handleDownload}
