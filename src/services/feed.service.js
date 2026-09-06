@@ -6,6 +6,11 @@ const feed = async (page = 1, limit = 5) => {
     return response.data
 }
 
+const followingFeed = async (page = 1, limit = 5) => {
+    const response = await API.get(`/api/posts/feed/following?page=${page}&limit=${limit}`)
+    return response.data
+}
 
 
-export { feed }
+
+export { feed, followingFeed }

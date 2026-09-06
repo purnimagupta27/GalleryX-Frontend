@@ -14,7 +14,7 @@ const Logo = () => {
         </div>
         <div className="">
           <h1
-            className="m-0 text-sm sm:text-xl md:text-2xl text-zinc-500 font-bold tracking-normal uppercase"
+            className="m-0 text-lg sm:text-xl md:text-2xl text-zinc-500 font-bold tracking-normal uppercase"
             style={{ fontFamily: "'Quicksand', sans-serif" }}
           >
             PIXORA

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { feed } from "../services/feed.service";
+import { feed, followingFeed } from "../services/feed.service";
 import { HomeNavbar } from "../components/HomeNavbar";
 import { useNavigate } from "react-router-dom";
 import Shimmer from "../components/Shimmer";
@@ -18,18 +18,27 @@ const HomePage = () => {
   const navigate = useNavigate();
   const observer = useRef();
 
+  const [activeTab, setActiveTab] = useState("forYou");
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [columnCount, setColumnCount] = useState(getColumnCount());
 
-
   useEffect(() => {
     const handleResize = () => setColumnCount(getColumnCount());
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Reset everything when tab changes
+  const handleTabChange = (tab) => {
+    if (tab === activeTab) return;
+    setActiveTab(tab);
+    setImages([]);
+    setPage(1);
+    setHasMore(true);
+  };
 
   const lastPostElementRef = useCallback(
     (node) => {
@@ -48,12 +57,12 @@ const HomePage = () => {
   );
 
   useEffect(() => {
-
     const fetchImageData = async () => {
       setLoading(true);
 
       try {
-        const response = await feed(page, 5);
+        const fetchFn = activeTab === "following" ? followingFeed : feed;
+        const response = await fetchFn(page, 5);
         const newPosts = response?.data?.data?.posts || [];
 
         if (newPosts.length === 0) {
@@ -74,7 +83,7 @@ const HomePage = () => {
     };
 
     fetchImageData();
-  }, [page, navigate]);
+  }, [page, activeTab, navigate]);
 
   const columns = useMemo(() => {
     const cols = Array.from({ length: columnCount }, () => []);
@@ -89,6 +98,32 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
       <HomeNavbar />
+
+      <div className="flex items-center justify-center gap-6 pt-4 pb-2">
+        <button
+          onClick={() => handleTabChange("forYou")}
+          className={`pb-1.5 text-sm sm:text-base font-semibold tracking-wide transition-all duration-200 cursor-pointer border-b-2 ${
+            activeTab === "forYou"
+              ? "text-white border-white"
+              : "text-white/40 border-transparent hover:text-white/70"
+          }`}
+          style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
+          For You
+        </button>
+        <button
+          onClick={() => handleTabChange("following")}
+          className={`pb-1.5 text-sm sm:text-base font-semibold tracking-wide transition-all duration-200 cursor-pointer border-b-2 ${
+            activeTab === "following"
+              ? "text-white border-white"
+              : "text-white/40 border-transparent hover:text-white/70"
+          }`}
+          style={{ fontFamily: "'Outfit', sans-serif" }}
+        >
+          Following
+        </button>
+      </div>
+
       <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
         {images.length === 0 && loading ? (
           <Shimmer />
@@ -98,7 +133,9 @@ const HomePage = () => {
               className="text-white/50 text-sm sm:text-base font-medium"
               style={{ fontFamily: "'Outfit', sans-serif" }}
             >
-              No posts yet. Be the first to share!
+              {activeTab === "following"
+                ? "No posts from people you follow yet."
+                : "No posts yet. Be the first to share!"}
             </p>
           </div>
         ) : (

@@ -366,18 +366,23 @@ const PostPage = () => {
 
           <div className="absolute bottom-0 left-0 right-0 z-20 p-4 sm:p-6 pr-20 sm:pr-24 flex flex-col gap-2">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center shrink-0 shadow-lg ring-2 ring-white/30">
-                {post?.user?.username ? (
-                  <span
-                    className="text-white font-bold text-sm"
-                    style={{ fontFamily: "'Outfit', sans-serif" }}
-                  >
-                    {post.user.username.charAt(0).toUpperCase()}
-                  </span>
-                ) : (
-                  <User className="w-5 h-5 text-white" />
-                )}
-              </div>
+              <Link
+                to={`/profile/${post?.user?.userId}`}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-rose-500/30 via-white/15 to-purple-500/30 p-0.5 shadow-lg flex items-center justify-center border border-white/15 shrink-0 hover:scale-105 transition-transform duration-200 cursor-pointer"
+              >
+                <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center">
+                  {post?.user?.username ? (
+                    <span
+                      className="text-white font-bold text-xs sm:text-sm uppercase select-none"
+                      style={{ fontFamily: "'Outfit', sans-serif" }}
+                    >
+                      {post.user.username.charAt(0).toUpperCase()}
+                    </span>
+                  ) : (
+                    <User className="w-4 h-4 text-white" />
+                  )}
+                </div>
+              </Link>
 
               <Link
                 to={`/profile/${post?.user?.userId}`}

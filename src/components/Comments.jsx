@@ -206,12 +206,16 @@ export const Comments = ({ post, currentUser: propCurrentUser }) => {
                     >
                       <div className="flex items-start gap-2.5 flex-1 min-w-0">
                         <div
-                          className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center shrink-0 text-white font-bold text-[10px] sm:text-xs shadow-sm ring-1 ring-white/20 select-none cursor-pointer"
+                          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-rose-500/30 via-white/15 to-purple-500/30 p-0.5 shadow-sm flex items-center justify-center border border-white/15 shrink-0 select-none cursor-pointer hover:scale-105 transition-transform duration-200"
                           onClick={() =>
                             comment.userId && navigate(`/profile/${comment.userId}`)
                           }
                         >
-                          {initial}
+                          <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center">
+                            <span className="text-[10px] sm:text-xs font-bold text-white uppercase select-none">
+                              {initial}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="flex-1 min-w-0 pt-0.5">

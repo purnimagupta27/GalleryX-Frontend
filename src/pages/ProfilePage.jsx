@@ -56,14 +56,17 @@ export const ProfilePage = () => {
   }, [posts, columnCount]);
 
   if (!userProfile) {
-    return (
-      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
-        <p className="text-white/50 text-sm font-medium tracking-wider uppercase animate-pulse">
-          Loading...
-        </p>
-      </div>
-    );
-  }
+      return (
+        <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
+          <HomeNavbar />
+          <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1 flex items-center justify-center">
+            <p className="text-white/50 text-sm font-medium tracking-wider uppercase animate-pulse">
+              Loading...
+            </p>
+          </div>
+        </div>
+      );
+    }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">

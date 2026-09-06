@@ -92,7 +92,7 @@ const ImageUpload = ({ isOpen = true, onClose, onPostCreated }) => {
       }
       handleClose();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to create post");
+      toast(err.response?.data?.message || "Login to add your pictures");
     } finally {
       setLoading(false);
     }

@@ -30,7 +30,7 @@ const features = [
     image: featureFollow,
   },
   {
-    title: "PRIVATE PHOTO SHARING",
+    title: "KEEP THE MEMORIES CLOSE",
     description:
       "Your memories, your privacy. Choose to keep your photos private whenever you want. Share only what you're comfortable sharing with the world while keeping your personal moments safe and accessible only to you.",
     image: featurePrivate,
