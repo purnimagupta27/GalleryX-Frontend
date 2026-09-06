@@ -5,6 +5,7 @@ import {
   getCollections,
   getCollectionStatus,
   saveToCollections,
+  removeFromCollections,
 } from "../services/collection.service.js";
 import {
   Download,
@@ -32,6 +33,7 @@ const PostPage = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showEditPost, setShowEditPost] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [savedBoardId, setSavedBoardId] = useState(null);
   const [collections, setCollections] = useState([]);
   const [showCollection, setShowCollection] = useState(false);
 
@@ -117,18 +119,21 @@ const PostPage = () => {
   };
 
   const handleSaveClick = () => {
-    setShowCollection((prev) => !prev);
-    if (!collections.length) {
-      getCollections().then((res) => {
-        if (res?.data) setCollections(res.data);
-      });
+    if (isBookmarked) {
+      handleUnsave();
+    } else {
+      setShowCollection((prev) => !prev);
+      if (!collections.length) {
+        getCollections().then((res) => {
+          if (res?.data) setCollections(res.data);
+        });
+      }
     }
   };
 
   const handleSave = async (boardId) => {
-    const previousBookmarkState = isBookmarked;
-
     setIsBookmarked(true);
+    setSavedBoardId(boardId);
     setShowCollection(false);
     toast.success("Saved to bookmark");
 
@@ -138,8 +143,40 @@ const PostPage = () => {
       if (err.response?.status === 409) {
         return;
       }
-      setIsBookmarked(previousBookmarkState);
+      setIsBookmarked(false);
+      setSavedBoardId(null);
       toast.error(err.response?.data?.message || "Failed to save post");
+    }
+  };
+
+  const handleUnsave = async () => {
+    const prevBoardId = savedBoardId;
+
+    setIsBookmarked(false);
+    setSavedBoardId(null);
+    setShowCollection(false);
+    toast.success("Removed from bookmark");
+
+    try {
+      if (prevBoardId) {
+        await removeFromCollections(prevBoardId, postId);
+      } else {
+        const collectionsRes = collections.length
+          ? { data: collections }
+          : await getCollections().catch(() => null);
+        const boards = collectionsRes?.data || [];
+        for (const board of boards) {
+          try {
+            await removeFromCollections(board.id, postId);
+          } catch {
+            toast.error("Something went wrong")
+          }
+        }
+      }
+    } catch (err) {
+      setIsBookmarked(true);
+      setSavedBoardId(prevBoardId);
+      toast.error(err.response?.data?.message || "Failed to remove from bookmark");
     }
   };
 

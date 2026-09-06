@@ -154,14 +154,21 @@ const UserProfilePage = () => {
       <div className="flex items-center justify-center mt-2 mb-2">
         <button
           onClick={handleFollow}
-          className={`px-6 py-2 rounded-full text-xs sm:text-sm font-semibold active:scale-95 transition-all cursor-pointer shadow-md ${
+          className={`group min-w-[110px] px-6 py-2 rounded-full text-xs sm:text-sm font-semibold active:scale-95 transition-all duration-200 cursor-pointer shadow-md ${
             isFollowing
-              ? "bg-zinc-900/80 border border-white/15 text-zinc-300 hover:text-white hover:border-white/30 backdrop-blur-md"
+              ? "bg-zinc-900/80 border border-white/15 text-zinc-300 hover:bg-rose-500/15 hover:border-rose-500/30 hover:text-rose-400 backdrop-blur-md"
               : "bg-white text-zinc-950 hover:bg-white/90"
           }`}
           style={{ fontFamily: "'Outfit', sans-serif" }}
         >
-          {isFollowing ? "Following" : "Follow"}
+          {isFollowing ? (
+            <>
+              <span className="group-hover:hidden">Following</span>
+              <span className="hidden group-hover:inline">Unfollow</span>
+            </>
+          ) : (
+            "Follow"
+          )}
         </button>
       </div>
 

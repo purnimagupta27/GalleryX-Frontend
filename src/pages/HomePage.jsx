@@ -65,7 +65,7 @@ const HomePage = () => {
         if (err.response?.status === 401) {
           navigate("/");
         }
-        else{
+        else {
           toast.error("Something went wrong")
         }
       } finally {
@@ -89,7 +89,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
       <HomeNavbar />
-<div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
+      <div className="max-w-7xl mx-auto w-full p-4 sm:p-6 md:p-8 flex-1">
         {images.length === 0 && loading ? (
           <Shimmer />
         ) : images.length === 0 ? (

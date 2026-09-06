@@ -26,6 +26,11 @@ const saveToCollections = async (boardId, postId) => {
   return response.data
 }
 
+const removeFromCollections = async(boardId, postId) => {
+  const response = await API.delete(`/api/boards/${boardId}/remove-post/${postId}`)
+  return response.data
+}
+
 const getPostsFromCollection = async (bookmarkId) => {
   const response = await API.get(`/api/boards/${bookmarkId}/posts`)
   return response.data
@@ -37,5 +42,6 @@ export {
   deletecollection,
   getCollectionStatus,
   saveToCollections,
+  removeFromCollections,
   getPostsFromCollection
 };
